@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: backend
+
+  # PostgreSQL Driver Setting
+  datasource:
+    url: jdbc:postgresql://localhost:5432/project_lamp
+    username: lamp_backend
+    password: lampofhambak0302
+    driver-class-name: org.postgresql.Driver
+
+  # JPA Setting
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
