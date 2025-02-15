@@ -19,12 +19,14 @@ public class SnsAuth {
   @NotBlank
   private String snsId;
 
+  // Metadata
   @PastOrPresent
   private LocalDateTime created;
 
   @PastOrPresent
   private LocalDateTime updated;
 
+  // Entity Correlation
   @MapsId("memberId")
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id")

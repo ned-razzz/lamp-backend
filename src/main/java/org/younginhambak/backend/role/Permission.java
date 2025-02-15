@@ -21,6 +21,7 @@ public class Permission {
   @NotBlank
   private String identifier;
 
+  // Entity Correlation
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "role_id")
   private Role role;

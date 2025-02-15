@@ -11,6 +11,7 @@ import org.younginhambak.backend.file.DataFile;
 @NoArgsConstructor
 public class DocumentFile extends DataFile {
 
+  // Entity Correlation
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "document_id")
   private Document document;

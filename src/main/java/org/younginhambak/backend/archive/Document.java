@@ -34,6 +34,7 @@ public class Document {
   @Size(min = 3, max = 30)
   private String author;
 
+  // Metadata
   @NotNull
   @Enumerated(EnumType.STRING)
   private DocumentStatus status;
@@ -44,6 +45,7 @@ public class Document {
   @PastOrPresent
   private LocalDateTime updated;
 
+  // Entity Correlation
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id")
   private Member member;

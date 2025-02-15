@@ -29,6 +29,7 @@ public class Tag {
   @Column(unique = true)
   private String name;
 
+  // Metadata
   @NotNull
   @Enumerated(EnumType.STRING)
   private TagStatus tag;
@@ -39,6 +40,7 @@ public class Tag {
   @PastOrPresent
   private LocalDateTime updated;
 
+  // Entity Correlation
   @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY)
   private List<DocumentTag> documentTags = new ArrayList<>();
 

@@ -13,6 +13,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class SnsAuthId implements Serializable {
 
+  // Entity Correlation
   @Column(name = "member_id")
   private Long memberId;
 

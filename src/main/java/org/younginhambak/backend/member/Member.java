@@ -33,6 +33,7 @@ public class Member {
   @Size(min = 3, max = 15)
   private String nickname;
 
+  // Metadata
   @NotNull
   @Enumerated(EnumType.STRING)
   private MemberStatus status;
@@ -43,6 +44,7 @@ public class Member {
   @PastOrPresent
   private LocalDateTime updated;
 
+  // Entity Correlation
   @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
   private List<SnsAuth> snsAuths = new ArrayList<>();
 

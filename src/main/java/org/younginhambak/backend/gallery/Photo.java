@@ -35,6 +35,7 @@ public class Photo {
 
   private LocalDateTime takenAt;
 
+  // Metadata
   @NotNull
   @Enumerated(EnumType.STRING)
   private PhotoStatus status;
@@ -45,6 +46,7 @@ public class Photo {
   @PastOrPresent
   private LocalDateTime updated;
 
+  // Entity Correlation
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id")
   private Member member;

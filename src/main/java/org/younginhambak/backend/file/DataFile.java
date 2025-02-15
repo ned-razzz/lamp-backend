@@ -31,6 +31,7 @@ public abstract class DataFile {
   @Enumerated(EnumType.STRING)
   private FileExtension extension;
 
+  // Metadata
   @NotNull
   @Enumerated(EnumType.STRING)
   private DataFileStatus status;

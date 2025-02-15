@@ -29,12 +29,14 @@ public class Role {
   @Size(max = 100)
   private String description;
 
+  // Metadata
   @PastOrPresent
   private LocalDateTime created;
 
   @PastOrPresent
   private LocalDateTime updated;
 
+  // Entity Correlation
   @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
   private List<Member> members = new ArrayList<>();
 

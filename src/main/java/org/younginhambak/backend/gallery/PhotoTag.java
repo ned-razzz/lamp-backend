@@ -14,6 +14,7 @@ public class PhotoTag {
   @EmbeddedId
   private PhotoTagId id;
 
+  // Entity Correlation
   @MapsId("photoId")
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "photo_id")

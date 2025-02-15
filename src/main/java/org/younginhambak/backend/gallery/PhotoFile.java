@@ -11,6 +11,7 @@ import org.younginhambak.backend.file.DataFile;
 @NoArgsConstructor
 public class PhotoFile extends DataFile {
 
+  // Entity Correlation
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "photo_id")
   private Photo photo;

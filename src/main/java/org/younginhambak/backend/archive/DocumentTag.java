@@ -15,6 +15,7 @@ public class DocumentTag {
   @EmbeddedId
   private DocumentTagId id;
 
+  // Entity Correlation
   @MapsId("documentId")
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "document_id")
