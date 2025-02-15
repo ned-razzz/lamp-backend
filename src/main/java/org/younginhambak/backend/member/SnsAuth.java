@@ -10,17 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SnsAuth {
 
-//  @Id
-//  @GeneratedValue(strategy = GenerationType.IDENTITY)
-//  @Column(name = "auth_id")
-//  private Long id;
-
   @EmbeddedId
   private SnsAuthId id;
-//
-//  @MapsId("snsProvider")
-//  @NotBlank
-//  private String snsProvider;
 
   @NotBlank
   private String snsId;

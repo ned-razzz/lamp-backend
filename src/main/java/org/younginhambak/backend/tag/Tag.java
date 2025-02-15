@@ -1,7 +1,9 @@
 package org.younginhambak.backend.tag;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.younginhambak.backend.archive.DocumentTag;
@@ -20,6 +22,8 @@ public class Tag {
   @Column(name = "tag_id")
   private Long id;
 
+  @NotBlank
+  @Size(min = 2, max = 20)
   @Column(unique = true)
   private String name;
 
