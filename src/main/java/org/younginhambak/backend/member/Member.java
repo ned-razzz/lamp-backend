@@ -1,16 +1,14 @@
 package org.younginhambak.backend.member;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.younginhambak.backend.archive.Document;
 import org.younginhambak.backend.gallery.Photo;
 import org.younginhambak.backend.role.Role;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +36,12 @@ public class Member {
   @NotNull
   @Enumerated(EnumType.STRING)
   private MemberStatus status;
+
+  @PastOrPresent
+  private LocalDateTime created;
+
+  @PastOrPresent
+  private LocalDateTime updated;
 
   @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
   private List<SnsAuth> snsAuths = new ArrayList<>();

@@ -2,11 +2,13 @@ package org.younginhambak.backend.role;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.younginhambak.backend.member.Member;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +28,12 @@ public class Role {
   @NotBlank
   @Size(max = 100)
   private String description;
+
+  @PastOrPresent
+  private LocalDateTime created;
+
+  @PastOrPresent
+  private LocalDateTime updated;
 
   @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
   private List<Member> members = new ArrayList<>();

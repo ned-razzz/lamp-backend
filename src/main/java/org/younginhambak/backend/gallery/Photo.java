@@ -3,6 +3,7 @@ package org.younginhambak.backend.gallery;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,6 +38,12 @@ public class Photo {
   @NotNull
   @Enumerated(EnumType.STRING)
   private PhotoStatus status;
+
+  @PastOrPresent
+  private LocalDateTime created;
+
+  @PastOrPresent
+  private LocalDateTime updated;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id")

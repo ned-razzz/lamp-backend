@@ -3,11 +3,13 @@ package org.younginhambak.backend.archive;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.younginhambak.backend.member.Member;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +37,12 @@ public class Document {
   @NotNull
   @Enumerated(EnumType.STRING)
   private DocumentStatus status;
+
+  @PastOrPresent
+  private LocalDateTime created;
+
+  @PastOrPresent
+  private LocalDateTime updated;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id")

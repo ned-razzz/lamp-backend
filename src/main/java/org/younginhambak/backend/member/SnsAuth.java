@@ -2,8 +2,11 @@ package org.younginhambak.backend.member;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -15,6 +18,12 @@ public class SnsAuth {
 
   @NotBlank
   private String snsId;
+
+  @PastOrPresent
+  private LocalDateTime created;
+
+  @PastOrPresent
+  private LocalDateTime updated;
 
   @MapsId("memberId")
   @ManyToOne(fetch = FetchType.LAZY)
