@@ -4,15 +4,22 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+/**
+ * S3에 저장되는 데이터들을 관리합니다.
+ */
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "file")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "dtype")
 @Getter
+@Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor
 public abstract class DataFile {
 

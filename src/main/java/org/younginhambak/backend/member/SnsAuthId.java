@@ -9,7 +9,6 @@ import java.io.Serializable;
 @Embeddable
 @Getter
 @EqualsAndHashCode
-@NoArgsConstructor
 @AllArgsConstructor
 public class SnsAuthId implements Serializable {
 

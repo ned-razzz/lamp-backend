@@ -14,6 +14,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 태그를 관리합니다.
+ * Aggregate Root입니다.
+ * @version 1.0
+ */
 @Entity
 @Getter
 @NoArgsConstructor
@@ -32,7 +37,7 @@ public class Tag {
   // Metadata
   @NotNull
   @Enumerated(EnumType.STRING)
-  private TagStatus tag;
+  private TagStatus status;
 
   @PastOrPresent
   private LocalDateTime created;
@@ -46,4 +51,30 @@ public class Tag {
 
   @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY)
   private List<PhotoTag> photoTags = new ArrayList<>();
+
+  // Business Logic
+
+  /**
+   * 새로운 Tag를 생성합니다.
+   * @param name 태그명
+   * @return 새로 생성된 Tag 객체
+   */
+  public static Tag create(String name) {
+    Tag tag = new Tag();
+    tag.name = name;
+    tag.status = TagStatus.ACTIVE;
+    return tag;
+  }
+
+  /**
+   * Tag를 삭제합니다.
+   * 해당 Tag에 연관관계로 설정되어 있는 DocumentTag, PhotoTag들을 삭제합니다. (DB 작업 필요)
+   */
+  public void delete() {
+    documentTags.forEach(DocumentTag::delete);
+    photoTags.forEach(PhotoTag::delete);
+
+    status = TagStatus.DELETED;
+    updated = LocalDateTime.now();
+  }
 }

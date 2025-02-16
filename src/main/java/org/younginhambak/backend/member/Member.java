@@ -12,6 +12,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 웹사이트 유저를 관리합니다.
+ * Aggregate Root입니다.
+ * @version 1.0
+ */
 @Entity
 @Getter
 @NoArgsConstructor
@@ -57,4 +62,25 @@ public class Member {
 
   @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
   private List<Photo> photos = new ArrayList<>();
+
+  // Business Logic
+  /**
+   * 새로운 Member를 생성합니다.
+   * @param name 유저 실명
+   * @param email 이메일
+   * @param nickname 닉네임
+   * @return 새로 생성된 Member 객체
+   */
+  public static Member create(
+          String name,
+          String email,
+          String nickname
+  ) {
+    Member member = new Member();
+    member.name = name;
+    member.email = email;
+    member.nickname = nickname;
+
+    return member;
+  }
 }
