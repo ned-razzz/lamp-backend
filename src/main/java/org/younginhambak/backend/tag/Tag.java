@@ -7,7 +7,7 @@ import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.younginhambak.backend.archive.DocumentTag;
+import org.younginhambak.backend.archive.entity.DocumentTag;
 import org.younginhambak.backend.gallery.PhotoTag;
 
 import java.time.LocalDateTime;

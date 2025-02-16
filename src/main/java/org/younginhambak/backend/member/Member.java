@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.younginhambak.backend.archive.Document;
+import org.younginhambak.backend.archive.entity.Document;
 import org.younginhambak.backend.gallery.Photo;
 import org.younginhambak.backend.role.Role;
 

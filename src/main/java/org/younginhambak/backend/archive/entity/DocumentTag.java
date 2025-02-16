@@ -1,4 +1,4 @@
-package org.younginhambak.backend.archive;
+package org.younginhambak.backend.archive.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
