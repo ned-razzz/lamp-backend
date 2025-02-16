@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.younginhambak.backend.file.PhotoFile;
 import org.younginhambak.backend.member.Member;
 
 import java.time.LocalDateTime;
@@ -62,7 +63,6 @@ public class Photo {
   @OneToMany(mappedBy = "photo", fetch = FetchType.LAZY)
   private List<PhotoTag> photoTags = new ArrayList<>();
 
-  @Setter(AccessLevel.PROTECTED)
   @OneToOne(mappedBy = "photo", fetch = FetchType.LAZY)
   private PhotoFile file;
 
@@ -75,6 +75,14 @@ public class Photo {
   public void removeMember() {
     this.member.getPhotos().remove(this);
     this.member = null;
+  }
+
+  public void addFile(PhotoFile file) {
+    this.file = file;
+  }
+
+  public void removeFile() {
+    this.file = null;
   }
 
   // Business Logic

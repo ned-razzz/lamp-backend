@@ -1,6 +1,7 @@
 package org.younginhambak.backend.archive;
 
 import org.junit.jupiter.api.Test;
+import org.younginhambak.backend.file.DocumentFile;
 import org.younginhambak.backend.file.FileExtension;
 import org.younginhambak.backend.member.Member;
 import org.younginhambak.backend.tag.Tag;

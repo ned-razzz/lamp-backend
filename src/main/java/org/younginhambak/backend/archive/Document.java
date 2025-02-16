@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.younginhambak.backend.file.DocumentFile;
 import org.younginhambak.backend.member.Member;
 
 import java.time.LocalDateTime;

@@ -1,12 +1,10 @@
-package org.younginhambak.backend.archive;
+package org.younginhambak.backend.file;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.younginhambak.backend.file.DataFile;
-import org.younginhambak.backend.file.DataFileStatus;
-import org.younginhambak.backend.file.FileExtension;
+import org.younginhambak.backend.archive.Document;
 
 import java.time.LocalDateTime;
 import java.util.EnumSet;
