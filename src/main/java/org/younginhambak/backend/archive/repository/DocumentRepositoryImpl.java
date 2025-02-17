@@ -16,16 +16,26 @@ public class DocumentRepositoryImpl implements DocumentRepository {
 
   @Override
   public void save(Document document) {
-
+    em.persist(document);
   }
 
   @Override
   public Optional<Document> findById(Long id) {
-    return Optional.empty();
+    Document document = em.find(Document.class, id);
+    return Optional.of(document);
+  }
+
+  @Override
+  public List<Document> findByTitle(String title) {
+    String jsql = "select d from Document d where d.title like :title";
+    return em.createQuery(jsql, Document.class)
+            .setParameter("title", title)
+            .getResultList();
   }
 
   @Override
   public List<Document> findAll() {
-    return List.of();
+    return em.createQuery("select d from Document d", Document.class)
+            .getResultList();
   }
 }

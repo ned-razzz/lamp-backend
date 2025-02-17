@@ -10,7 +10,9 @@ public interface DocumentRepository {
 
   void save(Document document);
 
-  Optional<Document> findById(Long documentId);
+  Optional<Document> findById(Long id);
+
+  List<Document> findByTitle(String title);
 
   List<Document> findAll();
 }
