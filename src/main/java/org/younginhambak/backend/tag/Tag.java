@@ -63,6 +63,8 @@ public class Tag {
     Tag tag = new Tag();
     tag.name = name;
     tag.status = TagStatus.ACTIVE;
+    tag.created = LocalDateTime.now();
+    tag.updated= LocalDateTime.now();
     return tag;
   }
 

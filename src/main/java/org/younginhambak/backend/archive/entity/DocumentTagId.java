@@ -8,6 +8,7 @@ import java.io.Serializable;
 @Embeddable
 @Getter
 @EqualsAndHashCode
+@NoArgsConstructor
 @AllArgsConstructor
 public class DocumentTagId implements Serializable {
 

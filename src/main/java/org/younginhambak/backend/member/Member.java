@@ -31,7 +31,7 @@ public class Member {
   private String name;
 
   @NotBlank
-  @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9][.][A-Za-z]{2,}$")
+  @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9]+[.][A-Za-z]{2,}$")
   private String email;
 
   @NotBlank
@@ -80,6 +80,9 @@ public class Member {
     member.name = name;
     member.email = email;
     member.nickname = nickname;
+    member.status = MemberStatus.ACTIVE;
+    member.created = LocalDateTime.now();
+    member.updated = LocalDateTime.now();
 
     return member;
   }
