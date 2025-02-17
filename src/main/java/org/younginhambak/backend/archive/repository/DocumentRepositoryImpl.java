@@ -29,7 +29,7 @@ public class DocumentRepositoryImpl implements DocumentRepository {
   public List<Document> findByTitle(String title) {
     String jsql = "select d from Document d where d.title like :title";
     return em.createQuery(jsql, Document.class)
-            .setParameter("title", title)
+            .setParameter("title", "%" + title + "%")
             .getResultList();
   }
 
