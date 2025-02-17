@@ -57,10 +57,10 @@ public class Document {
   @JoinColumn(name = "member_id")
   private Member member;
 
-  @OneToMany(mappedBy = "document", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "document", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   private List<DocumentFile> files = new ArrayList<>();
 
-  @OneToMany(mappedBy = "document", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "document", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<DocumentTag> documentTags = new ArrayList<>();
 
   // Relationship Convenience Method
