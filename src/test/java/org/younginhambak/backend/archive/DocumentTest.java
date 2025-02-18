@@ -40,8 +40,6 @@ class DocumentTest {
     Document document = createDocument(documentFiles, documentTags);
 
     //when
-    Member memberU = Member.create("memberu", "memberu@gmail.com", "nicknameu");
-
     DocumentFile fileU = DocumentFile.create("fileu", "urlu", FileExtension.TXT);
     ArrayList<DocumentFile> filesU = new ArrayList<>();
     filesU.add(documentFiles.get(1));
@@ -57,14 +55,11 @@ class DocumentTest {
     documentTagsU.add(documentTagU2);
 
     document.update("titleu", "descriptionu", "authoru",
-            memberU,
             filesU,
             documentTagsU
             );
 
     //then
-    assertThat(document.getMember().getNickname()).isEqualTo(memberU.getNickname());
-
     assertThat(document.getFiles()).hasSize(2);
     assertThat(document.getFiles()).containsAll(filesU);
     assertThat(document.getFiles()).doesNotContain(documentFiles.get(0));

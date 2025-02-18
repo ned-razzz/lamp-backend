@@ -1,7 +1,6 @@
 package org.younginhambak.backend.archive.repository;
 
 import jakarta.persistence.EntityManager;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,15 +14,11 @@ import org.younginhambak.backend.file.FileExtension;
 import org.younginhambak.backend.member.Member;
 import org.younginhambak.backend.tag.Tag;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -86,7 +81,7 @@ class DocumentRepositoryImplTest {
     assertThat(findDocument.getStatus()).isEqualTo(DocumentStatus.ACTIVE);
     assertThat(findDocument.getTitle()).isEqualTo(document.getTitle());
     assertThat(findDocument.getDescription()).isEqualTo(document.getDescription());
-    assertThat(findDocument.getAuthor()).isEqualTo(document.getAuthor());
+    assertThat(findDocument.getAuthorName()).isEqualTo(document.getAuthorName());
     assertThat(findDocument.getMember()).isEqualTo(member);
     assertThat(findDocument.getDocumentTags()).containsAll(documentTags);
     assertThat(findDocument.getFiles()).containsAll(files);
