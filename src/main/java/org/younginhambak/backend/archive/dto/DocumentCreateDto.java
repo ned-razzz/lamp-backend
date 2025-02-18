@@ -1,15 +1,17 @@
 package org.younginhambak.backend.archive.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @Data
+@Builder
 public class DocumentCreateDto {
+
+  private Long creatorMemberId;
 
   @NotBlank
   @Size(min = 3, max = 100)
@@ -19,7 +21,7 @@ public class DocumentCreateDto {
   private String description;
 
   @Size(min = 3, max = 30)
-  private String author;
+  private String authorName;
 
   private List<String> tagNames;
 }
