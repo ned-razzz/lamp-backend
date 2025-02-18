@@ -2,11 +2,13 @@ package org.younginhambak.backend.archive.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
+@Builder
 public class DocumentUpdateDto {
 
   @NotBlank
@@ -17,7 +19,7 @@ public class DocumentUpdateDto {
   private String description;
 
   @Size(min = 3, max = 30)
-  private String author;
+  private String authorName;
 
   private List<String> tagNames;
 }

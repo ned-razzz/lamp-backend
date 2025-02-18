@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.younginhambak.backend.file.DocumentFile;
 import org.younginhambak.backend.member.Member;
+import org.younginhambak.backend.tag.Tag;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class Document {
   private String description;
 
   @Size(min = 3, max = 30)
-  private String author;
+  private String authorName;
 
   // Metadata
   @NotNull
@@ -104,7 +105,7 @@ public class Document {
     Document document = new Document();
     document.title = title;
     document.description = description;
-    document.author = author;
+    document.authorName = author;
     document.status = DocumentStatus.ACTIVE;
     document.created = LocalDateTime.now();
     document.updated = LocalDateTime.now();
@@ -126,7 +127,6 @@ public class Document {
    * @param title 문서 제목
    * @param description 문서 설명
    * @param author 문서 작성자
-   * @param member 문서 소유자
    * @param files 문서 자료 파일들
    * @param documentTags 문서 태그들
    */
@@ -134,13 +134,11 @@ public class Document {
           String title,
           String description,
           String author,
-          Member member,
           List<DocumentFile> files,
           List<DocumentTag> documentTags) {
     this.title = title;
     this.description = description;
-    this.author = author;
-    updateMember(member);
+    this.authorName = author;
     updateFiles(files);
     updateDocumentTags(documentTags);
 
@@ -158,6 +156,13 @@ public class Document {
 
     status = DocumentStatus.DELETED;
     updated = LocalDateTime.now();
+  }
+
+  public List<String> getTagNames() {
+    return documentTags.stream()
+            .map(DocumentTag::getTag)
+            .map(Tag::getName)
+            .toList();
   }
 
   private void updateFiles(List<DocumentFile> files) {
