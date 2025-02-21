@@ -2,48 +2,52 @@ package org.younginhambak.backend.archive.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.younginhambak.backend.archive.dto.DocumentCreateDto;
-import org.younginhambak.backend.archive.dto.DocumentUpdateDto;
+import org.younginhambak.backend.archive.dto.DocumentCreateRequest;
+import org.younginhambak.backend.archive.dto.DocumentGetResponse;
+import org.younginhambak.backend.archive.dto.DocumentUpdateRequest;
 import org.younginhambak.backend.archive.service.DocumentService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/documents")
 @Slf4j
 @RequiredArgsConstructor
 public class DocumentController {
 
   private final DocumentService documentService;
 
-  @GetMapping("/documents/{documentId}")
-  public void getDocument(@PathVariable Long documentId) {
+  @GetMapping("/{documentId}")
+  public DocumentGetResponse getDocument(@PathVariable Long documentId) {
+    return documentService.readDocument(documentId);
   }
 
-  @GetMapping("/documents")
-  public void getDocumentAll() {
-
+  @GetMapping
+  public List<DocumentGetResponse> getDocumentAll() {
+    return documentService.readDocumentAll();
   }
 
-  @PostMapping("/documents")
+  @ResponseStatus(HttpStatus.CREATED)
+  @PostMapping
   public void createDocument(
-          @RequestPart("document") DocumentCreateDto createDto,
-          @RequestPart("files") List<MultipartFile> files) {
-
+          @RequestBody DocumentCreateRequest createDto
+  ) {
+    documentService.createDocument(createDto);
   }
 
-  @PatchMapping("/documents/{documentId}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  @PatchMapping("/{documentId}")
   public void updatedDocument(
           @PathVariable Long documentId,
-          @RequestPart("document") DocumentUpdateDto updateDto,
-          @RequestPart("files") List<MultipartFile> files) {
-
+          @RequestBody DocumentUpdateRequest updateDto
+  ) {
+    documentService.updateDocument(documentId, updateDto);
   }
 
-  @DeleteMapping("/documents/{documentId}")
+  @DeleteMapping("/{documentId}")
   public void deleteDocument(@PathVariable Long documentId) {
-
+    documentService.deleteDocument(documentId);
   }
 }

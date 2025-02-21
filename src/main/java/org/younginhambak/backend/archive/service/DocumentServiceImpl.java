@@ -3,9 +3,9 @@ package org.younginhambak.backend.archive.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.younginhambak.backend.archive.dto.DocumentCreateDto;
-import org.younginhambak.backend.archive.dto.DocumentResponseDto;
-import org.younginhambak.backend.archive.dto.DocumentUpdateDto;
+import org.younginhambak.backend.archive.dto.DocumentCreateRequest;
+import org.younginhambak.backend.archive.dto.DocumentGetResponse;
+import org.younginhambak.backend.archive.dto.DocumentUpdateRequest;
 import org.younginhambak.backend.archive.entity.Document;
 import org.younginhambak.backend.archive.entity.DocumentTag;
 import org.younginhambak.backend.archive.entity.DocumentTagId;
@@ -41,9 +41,9 @@ public class DocumentServiceImpl implements DocumentService {
   }
 
   @Override
-  public DocumentResponseDto readDocument(Long documentId) {
+  public DocumentGetResponse readDocument(Long documentId) {
     Document document = documentRepository.findById(documentId).orElseThrow();
-    return DocumentResponseDto.builder()
+    return DocumentGetResponse.builder()
             .id(document.getId())
             .title(document.getTitle())
             .description(document.getDescription())
@@ -54,11 +54,11 @@ public class DocumentServiceImpl implements DocumentService {
   }
 
   @Override
-  public List<DocumentResponseDto> readDocumentAll() {
+  public List<DocumentGetResponse> readDocumentAll() {
     List<Document> documents = documentRepository.findAll();
     return documents.stream().
             map(document ->
-                    DocumentResponseDto.builder()
+                    DocumentGetResponse.builder()
                             .id(document.getId())
                             .title(document.getTitle())
                             .description(document.getDescription())
@@ -72,7 +72,7 @@ public class DocumentServiceImpl implements DocumentService {
 
   @Override
   @Transactional
-  public void createDocument(DocumentCreateDto createDto) {
+  public void createDocument(DocumentCreateRequest createDto) {
     Member member = memberService.getMember(createDto.getCreatorMemberId()).orElseThrow();
 
     List<DocumentTag> documentTags = getOrCreateDocumentTags(createDto.getTagNames());
@@ -91,7 +91,7 @@ public class DocumentServiceImpl implements DocumentService {
 
   @Override
   @Transactional
-  public void updateDocument(Long documentId, DocumentUpdateDto updateDto) {
+  public void updateDocument(Long documentId, DocumentUpdateRequest updateDto) {
     Document document = documentRepository.findById(documentId).orElseThrow(IllegalStateException::new);
 
     List<DocumentTag> documentTags = getOrCreateDocumentTags(documentId, updateDto.getTagNames());
