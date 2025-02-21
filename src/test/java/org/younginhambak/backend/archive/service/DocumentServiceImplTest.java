@@ -108,7 +108,7 @@ class DocumentServiceImplTest {
 
   @Test
   @Rollback(false)
-  void updatedDocument() {
+  void updateDocument() {
     //given
     Member member = Member.create("song", "user@naver.com", "user1");
     memberRepository.save(member);
@@ -132,7 +132,7 @@ class DocumentServiceImplTest {
             .build();
 
     //when
-    documentService.updatedDocument(1L, updateDto);
+    documentService.updateDocument(1L, updateDto);
 
     //then
     Document document = documentService.getDocument(1L).get();
@@ -200,11 +200,11 @@ class DocumentServiceImplTest {
             .build();
 
     //when
-    documentService.updatedDocument(1L, updateDto1);
+    documentService.updateDocument(1L, updateDto1);
     em.flush();
-    documentService.updatedDocument(1L, updateDto2);
+    documentService.updateDocument(1L, updateDto2);
     em.flush();
-    documentService.updatedDocument(4L, updateDto4);
+    documentService.updateDocument(4L, updateDto4);
 
     //then
 

@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class TagRepositoryImpl implements TagRepository{
+public class TagRepositoryImpl implements TagRepository {
 
   private final EntityManager em;
 
@@ -25,6 +25,13 @@ public class TagRepositoryImpl implements TagRepository{
   @Override
   public List<Tag> findAll() {
     return em.createQuery("select t from Tag t", Tag.class)
+            .getResultList();
+  }
+
+  @Override
+  public List<String> findExistingNames(List<String> names) {
+    return em.createQuery("select t.name from Tag t where t.name in :names", String.class)
+            .setParameter("names", names)
             .getResultList();
   }
 }

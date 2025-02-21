@@ -22,9 +22,7 @@ public class TagServiceImpl implements TagService {
   }
 
   @Override
-  public Boolean existTag(String tagName) {
-    List<Tag> tags = tagRepository.findAll();
-    return tags.stream()
-            .anyMatch(tag -> tag.isSameName(tagName));
+  public List<String> filterExistTagNames(List<String> tagNames) {
+    return tagRepository.findExistingNames(tagNames);
   }
 }

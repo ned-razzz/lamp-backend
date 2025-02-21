@@ -20,4 +20,11 @@ public class DocumentTagRepositoryImpl implements DocumentTagRepository {
     DocumentTag documentTag = em.find(DocumentTag.class, id);
     return Optional.ofNullable(documentTag);
   }
+
+  @Override
+  public List<DocumentTag> findByIdsIn(List<DocumentTagId> ids) {
+    return em.createQuery("select dt from DocumentTag dt where dt.id in :ids", DocumentTag.class)
+            .setParameter("ids", ids)
+            .getResultList();
+  }
 }

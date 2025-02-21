@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.younginhambak.backend.archive.dto.DocumentCreateDto;
+import org.younginhambak.backend.archive.dto.DocumentResponseDto;
 import org.younginhambak.backend.archive.dto.DocumentUpdateDto;
 import org.younginhambak.backend.archive.entity.Document;
 import org.younginhambak.backend.archive.entity.DocumentTag;
@@ -18,7 +19,6 @@ import org.younginhambak.backend.tag.service.TagService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -31,8 +31,8 @@ public class DocumentServiceImpl implements DocumentService {
   private final TagService tagService;
 
   @Override
-  public Optional<Document> getDocument(Long id) {
-    return documentRepository.findById(id);
+  public Optional<Document> getDocument(Long documentId) {
+    return documentRepository.findById(documentId);
   }
 
   @Override
@@ -41,18 +41,41 @@ public class DocumentServiceImpl implements DocumentService {
   }
 
   @Override
+  public DocumentResponseDto readDocument(Long documentId) {
+    Document document = documentRepository.findById(documentId).orElseThrow();
+    return DocumentResponseDto.builder()
+            .id(document.getId())
+            .title(document.getTitle())
+            .description(document.getDescription())
+            .authorName(document.getAuthorName())
+            .created(document.getCreated())
+            .updated(document.getUpdated())
+            .build();
+  }
+
+  @Override
+  public List<DocumentResponseDto> readDocumentAll() {
+    List<Document> documents = documentRepository.findAll();
+    return documents.stream().
+            map(document ->
+                    DocumentResponseDto.builder()
+                            .id(document.getId())
+                            .title(document.getTitle())
+                            .description(document.getDescription())
+                            .authorName(document.getAuthorName())
+                            .created(document.getCreated())
+                            .updated(document.getUpdated())
+                            .build())
+            .toList();
+  }
+
+
+  @Override
   @Transactional
   public void createDocument(DocumentCreateDto createDto) {
     Member member = memberService.getMember(createDto.getCreatorMemberId()).orElseThrow();
 
-    //DB에 없는 tagName들은 Tag, DocumentTag 생성
-    List<DocumentTag> documentTags = createTagAndDocumentTag(createDto.getTagNames());
-
-    //이미 존재하는 tagName들은 Tag를 불러와서 DocumentTag 생성
-    List<Tag> existTags = getExistTag(createDto.getTagNames());
-    existTags.stream()
-            .map(DocumentTag::create)
-            .forEach(documentTags::add);
+    List<DocumentTag> documentTags = getOrCreateDocumentTags(createDto.getTagNames());
 
     Document document = Document.create(
             createDto.getTitle(),
@@ -68,27 +91,10 @@ public class DocumentServiceImpl implements DocumentService {
 
   @Override
   @Transactional
-  public void updatedDocument(Long documentId, DocumentUpdateDto updateDto) {
+  public void updateDocument(Long documentId, DocumentUpdateDto updateDto) {
     Document document = documentRepository.findById(documentId).orElseThrow(IllegalStateException::new);
 
-    //DB에 없는 tagName들은 Tag, DocumentTag 생성
-    List<DocumentTag> documentTags = createTagAndDocumentTag(updateDto.getTagNames());
-
-    //이미 존재하는 tagName들은 Tag를 불러오기
-    //todo DB에 documentTagRepository.findById 쿼리를 계속 날린다. 나중에 쿼리 최적화 필요
-    List<Tag> existTags = getExistTag(updateDto.getTagNames());
-    for (Tag tag : existTags) {
-      DocumentTagId documentTagId = new DocumentTagId(documentId, tag.getId());
-      Optional<DocumentTag> result = documentTagRepository.findById(documentTagId);
-
-      //불러온 Tag들이 document 객체와 연결 안되어 있으면 DocumentTag 생성, 이미 연결되어 있으면 불러오기
-      if (result.isPresent()) {
-        documentTags.add(result.get());
-      }
-      else {
-        documentTags.add(DocumentTag.create(tag));
-      }
-    }
+    List<DocumentTag> documentTags = getOrCreateDocumentTags(documentId, updateDto.getTagNames());
 
     document.update(
             updateDto.getTitle(),
@@ -106,22 +112,71 @@ public class DocumentServiceImpl implements DocumentService {
     document.delete();
   }
 
-  //이미 존재하는 name의 Tag 객체들 가져오기
-  private List<Tag> getExistTag(List<String> tagNames) {
-    return tagNames.stream()
-            //todo existTag()가 게속 모든 tag들을 findAll()하므로 오버헤드 발생. DB 최적화 필요함.
-            .filter(tagService::existTag)
-            .map(name -> tagService.getTagByName(name).orElseThrow())
-            .collect(Collectors.toCollection(ArrayList::new));
+  //영속성에서 관리되는 Tag를 구분해서 DocumentTag를 생성
+  private List<DocumentTag> getOrCreateDocumentTags(List<String> tagNames) {
+    //영속성으로 관리되는 Tag는 가져오고, 아닌 Tag는 객체 생성
+    TagNamesSeparator tagNamesSeparator = separateTagNamesByPersistence(tagNames);
+    TagsSeparator tagsSeparator = createTags(tagNamesSeparator);
+
+    //이미 존재하는 Tag들과 새로 생성되는 Tag들을 DocumentTag 생성
+    List<DocumentTag> documentTags = new ArrayList<DocumentTag>();
+    tagsSeparator.newTags.stream()
+            .map(DocumentTag::create)
+            .forEach(documentTags::add);
+    tagsSeparator.persistentTags.stream()
+            .map(DocumentTag::create)
+            .forEach(documentTags::add);
+
+    return documentTags;
   }
 
-  //존재하지 않는 tag names들만 Tag와 DocumentTag 객체 생성
-  private List<DocumentTag> createTagAndDocumentTag(List<String> tagNames) {
-    return tagNames.stream()
-            //todo existTag()가 게속 모든 tag들을 findAll()하므로 오버헤드 발생. DB 최적화 필요함.
-            .filter(tagName -> !tagService.existTag(tagName))
-            .map(Tag::create)
+  //영속성에서 관리되는 Tag, DocumentTag를 구분해서 DocumentTag를 생성 또는 가져오기
+  private List<DocumentTag> getOrCreateDocumentTags(Long documentId, List<String> tagNames) {
+    TagNamesSeparator tagNamesSeparator = separateTagNamesByPersistence(tagNames);
+    TagsSeparator tagsSeparator = createTags(tagNamesSeparator);
+
+    List<DocumentTag> documentTags = new ArrayList<DocumentTag>();
+
+    //DB에 없는 Tag들은 DocumentTag 생성
+    tagsSeparator.newTags.stream()
             .map(DocumentTag::create)
-            .collect(Collectors.toCollection(ArrayList::new));
+            .forEach(documentTags::add);
+
+    //이미 영속성에 관리되는 Tag들 중에 이미 DocumentTag로 연결되어 있으면 불러오기
+    List<DocumentTag> persistentDocumentTags = documentTagRepository.findByIdsIn(
+            tagsSeparator.persistentTags.stream()
+                    .map(tag -> new DocumentTagId(documentId, tag.getId()))
+                    .toList()
+    );
+    documentTags.addAll(persistentDocumentTags);
+
+    //이미 영속성에 관리되는 Tag들 중에 이미 DocumentTag로 연결되지 않았으면 불러오기
+    List<Tag> connectedTagsAlready = persistentDocumentTags.stream().map(DocumentTag::getTag).toList();
+    tagsSeparator.persistentTags.stream()
+            .filter(tag -> !connectedTagsAlready.contains(tag))
+            .map(DocumentTag::create)
+            .forEach(documentTags::add);
+    return documentTags;
+  }
+
+  //영속성으로 관리되는 Tag는 가져오고 아닌 Tag는 생성
+  private TagNamesSeparator separateTagNamesByPersistence(List<String> tagNames) {
+    List<String> existTagNames = tagService.filterExistTagNames(tagNames);
+    List<String> nonexistTagNames = tagNames.stream()
+            .filter(tagName -> !existTagNames.contains(tagName))
+            .toList();
+    return new TagNamesSeparator(existTagNames, nonexistTagNames);
+  }
+
+  private TagsSeparator createTags(TagNamesSeparator namesSeparator) {
+    return new TagsSeparator(
+            namesSeparator.existTagNames.stream().map(tagName -> tagService.getTagByName(tagName).orElseThrow()).toList(),
+            namesSeparator.nonexistTagNames.stream().map(Tag::create).toList()
+    );
+  }
+
+  //새로 생성되는 태그와 영속성에서 가져온 태그를 구분하는 용도
+  private record TagNamesSeparator(List<String> existTagNames, List<String> nonexistTagNames) { }
+  private record TagsSeparator(List<Tag> persistentTags, List<Tag> newTags) {
   }
 }
