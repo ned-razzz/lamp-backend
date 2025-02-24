@@ -4,8 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.younginhambak.backend.archive.entity.Document;
 import org.younginhambak.backend.archive.entity.DocumentStatus;
 import org.younginhambak.backend.archive.entity.DocumentTag;
-import org.younginhambak.backend.file.DocumentFile;
-import org.younginhambak.backend.file.FileExtension;
+import org.younginhambak.backend.file.entity.DocumentFile;
+import org.younginhambak.backend.file.entity.FileExtension;
 import org.younginhambak.backend.member.Member;
 import org.younginhambak.backend.tag.Tag;
 
@@ -123,7 +123,7 @@ class DocumentTest {
 
   public List<DocumentFile> createDocumentFiles() {
     DocumentFile file1 = DocumentFile.create("file1", "url1", FileExtension.PDF);
-    DocumentFile file2 = DocumentFile.create("file2", "url2", FileExtension.DOC);
+    DocumentFile file2 = DocumentFile.create("file2", "url2", FileExtension.DOCX);
     ArrayList<DocumentFile> files = new ArrayList<>();
     files.add(file1);
     files.add(file2);
