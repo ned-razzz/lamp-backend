@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 import org.younginhambak.backend.file.entity.PhotoFile;
 import org.younginhambak.backend.member.Member;
 
@@ -22,6 +23,7 @@ import java.util.List;
  * @version 1.0
  */
 @Entity
+@SQLRestriction("status = 'ACTIVE'")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Photo {

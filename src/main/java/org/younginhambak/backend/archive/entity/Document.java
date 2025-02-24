@@ -25,6 +25,7 @@ import java.util.List;
  * @version 1.0
  */
 @Entity
+@SQLRestriction("status = 'ACTIVE'")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Document {

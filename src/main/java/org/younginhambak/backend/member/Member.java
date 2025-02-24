@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 import org.younginhambak.backend.archive.entity.Document;
 import org.younginhambak.backend.gallery.Photo;
 import org.younginhambak.backend.role.Role;
@@ -18,6 +19,7 @@ import java.util.List;
  * @version 1.0
  */
 @Entity
+@SQLRestriction("status = 'ACTIVE'")
 @Getter
 @NoArgsConstructor
 public class Member {
