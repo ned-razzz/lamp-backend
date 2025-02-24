@@ -2,6 +2,18 @@ spring:
   application:
     name: backend
 
+  # log color setting
+  output:
+    ansi:
+      enabled: ALWAYS
+
+  # form-data file maxinum size
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+
   # PostgreSQL Driver Setting
   datasource:
     url: jdbc:postgresql://localhost:5432/project_lamp
@@ -15,3 +27,30 @@ spring:
     hibernate:
       ddl-auto: create
     show-sql: true
+
+  #LocalStack S3
+  cloud:
+    aws:
+      region: us-east-1
+      endpoint: http://localhost:4566
+      s3:
+        path-style-access-enabled: true
+        bucket: project-lamp
+        folder:
+          document: documents/
+          photo: photos/
+      credentials:
+        access-key: test
+        secret-key: test
+
+
+logging.level.org.younginhambak.backend: DEBUG
+
+
+
+
+
+
+
+
+

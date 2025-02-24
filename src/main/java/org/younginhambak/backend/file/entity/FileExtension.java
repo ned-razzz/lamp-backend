@@ -1,5 +1,9 @@
 package org.younginhambak.backend.file.entity;
 
 public enum FileExtension {
-  HWP, DOC, PDF, TXT, PPT, MP3, MP4, JPG, PNG,
+  PDF, TXT,
+  HWP, HWPX, DOC, DOCX, XLS, XLSX, PPT, PPTX,
+  MP3, MP4,
+  JPG, PNG,
+  ;
 }

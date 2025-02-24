@@ -21,8 +21,11 @@ import java.util.EnumSet;
 public class DocumentFile extends DataFile {
 
   public static final EnumSet<FileExtension> documentExtensions = EnumSet.of(
-          FileExtension.DOC, FileExtension.HWP, FileExtension.PDF,
-          FileExtension.PPT, FileExtension.TXT
+          FileExtension.PDF, FileExtension.TXT,
+          FileExtension.DOC, FileExtension.DOCX,
+          FileExtension.XLS, FileExtension.XLSX,
+          FileExtension.PPT, FileExtension.PPTX,
+          FileExtension.HWP, FileExtension.HWPX
   );
 
   // Entity Correlation
@@ -32,11 +35,17 @@ public class DocumentFile extends DataFile {
 
   // Relationship Convenience Method
   public void addDocument(Document document) {
+    if (document == null) {
+      throw new IllegalArgumentException("document parameter is null");
+    }
     this.document = document;
     document.getFiles().add(this);
   }
 
-  private void removeDocument() {
+  public void removeDocument() {
+    if (document == null) {
+      return;
+    }
     document.getFiles().remove(this);
     document = null;
   }
@@ -59,6 +68,7 @@ public class DocumentFile extends DataFile {
     documentFile.setFileKey(fileKey);
     if (documentFile.isDocumentExtension(extension)) {
       documentFile.setExtension(extension);
+    } else {      throw new IllegalArgumentException("Invalid document file extension.");
     }
 
     documentFile.setStatus(DataFileStatus.ACTIVE);
