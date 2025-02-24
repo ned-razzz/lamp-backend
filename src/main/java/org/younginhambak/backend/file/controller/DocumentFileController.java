@@ -10,6 +10,7 @@ import org.younginhambak.backend.file.entity.FileExtension;
 import org.younginhambak.backend.file.dto.DocumentFileUploadRequest;
 import org.younginhambak.backend.file.service.DocumentFileService;
 
+import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,13 +43,13 @@ public class DocumentFileController {
 
   @DeleteMapping("/{fileId}")
   public void deleteFile(@PathVariable Long fileId) {
-    log.info("DELETE /files/documents : {}", fileId);
+    log.info("DELETE /files/documents/{}", fileId);
     documentFileService.deleteFile(fileId);
   }
 
   @GetMapping("/{fileId}")
-  public String downloadFile(@PathVariable Long fileId) {
-    log.info("GET /files/documents : {}", fileId);
+  public URL downloadFile(@PathVariable Long fileId) {
+    log.info("GET /files/documents/{}", fileId);
     return documentFileService.downloadFile(fileId);
   }
 

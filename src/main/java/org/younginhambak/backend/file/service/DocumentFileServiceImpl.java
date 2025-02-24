@@ -6,22 +6,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.younginhambak.backend.file.entity.DataFile;
 import org.younginhambak.backend.file.entity.DocumentFile;
 import org.younginhambak.backend.file.dto.DocumentFileUploadRequest;
 import org.younginhambak.backend.file.repository.DocumentFileRepository;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
-import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.time.Duration;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -31,7 +26,6 @@ public class DocumentFileServiceImpl implements DocumentFileService{
 
   private final DocumentFileRepository documentFileRepository;
   private final S3Template s3Template;
-//  private final S3Client s3Client;
   private final S3Presigner s3Presigner;
 
   @Value("${spring.cloud.aws.s3.bucket}")
@@ -39,9 +33,20 @@ public class DocumentFileServiceImpl implements DocumentFileService{
   @Value("${spring.cloud.aws.s3.folder.document}")
   private String savedFolder;
 
+  private static final Duration presignedUrlTTL = Duration.ofMinutes(20L);
+
   @Override
   public Optional<DocumentFile> getFile(Long fileId) {
     return documentFileRepository.findById(fileId);
+  }
+
+  @Override
+  public List<DocumentFile> getFiles(List<Long> fileIds) {
+    List<DocumentFile> files = documentFileRepository.findByIdIn(fileIds);
+    if (files.size() != fileIds.size()) {
+      throw new NoSuchElementException("file ids 중에 존재하지 않는 record의 id가 있습니다.");
+    }
+    return files;
   }
 
   @Override
@@ -90,30 +95,35 @@ public class DocumentFileServiceImpl implements DocumentFileService{
   }
 
   @Override
-  public String downloadFile(Long fileId) {
-    DataFile file = documentFileRepository.findById(fileId).orElseThrow();
+  public URL downloadFile(Long fileId) {
+    DocumentFile file = documentFileRepository.findById(fileId).orElseThrow();
+    return generateDownloadUrl(file.getFileKey(), file.getFileName());
+  }
 
-    //s3 객체 가져오는 요청 객체 생성
-    //UUID가 포함된 fileKey가 아니라 fileName으로 가져오도록 헤더 설정
-    GetObjectRequest getRequest = GetObjectRequest.builder()
-            .bucket(bucketName)
-            .key(file.getFileKey())
-            .responseContentDisposition("attachment; filename=\"%s\"".formatted(file.getFileName()))
-            .build();
-
-    //presign로 유효 기간까지 설정하는 요청 객체 생성
-    GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
-            .getObjectRequest(getRequest)
-            .signatureDuration(Duration.ofMinutes(20L))
-            .build();
-
-    //실제 요청하여 응답 url 반환
-    URL downloadURL = s3Presigner.presignGetObject(presignRequest).url();
-    return downloadURL.toString();
+  @Override
+  public List<URL> downloadFiles(List<Long> fileIds) {
+    List<DocumentFile> files = getFiles(fileIds);
+    return files.stream()
+            .map(file -> generateDownloadUrl(file.getFileKey(), file.getFileName()))
+            .toList();
   }
 
   private String generateUniqueKey(String fileName) {
     String uuid = UUID.randomUUID().toString();
     return fileName + "_" + uuid;
+  }
+
+  private URL generateDownloadUrl(String fileKey, String fileName) {
+    PresignedGetObjectRequest presignedRequest = s3Presigner.presignGetObject(presignReq -> presignReq
+            .signatureDuration(presignedUrlTTL)
+            .getObjectRequest(req -> req
+                    .bucket(bucketName)
+                    .key(fileKey)
+                    //다운로드 받을 때 파일명을 fileKey가 아니라 fileName으로 설정
+                    .responseContentDisposition("attachment; filename=\"%s\"".formatted(fileName))
+                    .build()
+            )
+    );
+    return presignedRequest.url();
   }
 }

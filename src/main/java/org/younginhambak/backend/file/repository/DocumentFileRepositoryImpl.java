@@ -3,7 +3,6 @@ package org.younginhambak.backend.file.repository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.younginhambak.backend.file.entity.DataFile;
 import org.younginhambak.backend.file.entity.DocumentFile;
 
 import java.util.List;
@@ -18,6 +17,13 @@ public class DocumentFileRepositoryImpl implements DocumentFileRepository {
   @Override
   public void save(DocumentFile file) {
     em.persist(file);
+  }
+
+  @Override
+  public List<DocumentFile> findByIdIn(List<Long> ids) {
+    return em.createQuery("select df from DocumentFile df where df.id in :ids", DocumentFile.class)
+            .setParameter("ids", ids)
+            .getResultList();
   }
 
   @Override
