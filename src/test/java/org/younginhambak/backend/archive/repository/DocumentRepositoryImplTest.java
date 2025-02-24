@@ -9,8 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.younginhambak.backend.archive.entity.Document;
 import org.younginhambak.backend.archive.entity.DocumentStatus;
 import org.younginhambak.backend.archive.entity.DocumentTag;
-import org.younginhambak.backend.file.DocumentFile;
-import org.younginhambak.backend.file.FileExtension;
+import org.younginhambak.backend.file.entity.DocumentFile;
+import org.younginhambak.backend.file.entity.FileExtension;
 import org.younginhambak.backend.member.Member;
 import org.younginhambak.backend.tag.Tag;
 
@@ -207,8 +207,8 @@ class DocumentRepositoryImplTest {
 
   private List<DocumentFile> createFiles() {
     DocumentFile file1 = DocumentFile.create("file1", "url1", FileExtension.PDF);
-    DocumentFile file2 = DocumentFile.create("file2", "url2", FileExtension.DOC);
-    DocumentFile file3 = DocumentFile.create("file3", "url3", FileExtension.PPT);
+    DocumentFile file2 = DocumentFile.create("file2", "url2", FileExtension.DOCX);
+    DocumentFile file3 = DocumentFile.create("file3", "url3", FileExtension.PPTX);
     return List.of(file1, file2, file3);
   }
 }

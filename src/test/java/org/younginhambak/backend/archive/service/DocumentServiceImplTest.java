@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import org.younginhambak.backend.archive.dto.DocumentCreateDto;
-import org.younginhambak.backend.archive.dto.DocumentUpdateDto;
+import org.younginhambak.backend.archive.dto.DocumentCreateRequest;
+import org.younginhambak.backend.archive.dto.DocumentUpdateRequest;
 import org.younginhambak.backend.archive.entity.Document;
 import org.younginhambak.backend.member.Member;
 import org.younginhambak.backend.member.repository.MemberRepository;
@@ -44,7 +44,7 @@ class DocumentServiceImplTest {
     Member member = Member.create("song", "user@naver.com", "user1");
     memberRepository.save(member);
     List<String> tagNames = Arrays.asList("church", "bible");
-    DocumentCreateDto createDto = DocumentCreateDto.builder()
+    DocumentCreateRequest createDto = DocumentCreateRequest.builder()
             .title("document")
             .description("this is document")
             .authorName("hong")
@@ -70,28 +70,28 @@ class DocumentServiceImplTest {
     Member member = Member.create("song", "user@naver.com", "user1");
     memberRepository.save(member);
 
-    DocumentCreateDto createDto1 = DocumentCreateDto.builder()
+    DocumentCreateRequest createDto1 = DocumentCreateRequest.builder()
             .title("document")
             .description("this is document")
             .authorName("hong")
             .tagNames(Arrays.asList("tag1", "tag2", "tag3", "tag4", "tag5"))
             .creatorMemberId(1L)
             .build();
-    DocumentCreateDto createDto2 = DocumentCreateDto.builder()
+    DocumentCreateRequest createDto2 = DocumentCreateRequest.builder()
             .title("document2")
             .description("this is document2")
             .authorName("song")
             .tagNames(Arrays.asList("tag1", "tag2", "tag3"))
             .creatorMemberId(1L)
             .build();
-    DocumentCreateDto createDto3 = DocumentCreateDto.builder()
+    DocumentCreateRequest createDto3 = DocumentCreateRequest.builder()
             .title("document3")
             .description("this is document3")
             .authorName("song")
             .tagNames(Arrays.asList("tag2", "tag3", "tag6"))
             .creatorMemberId(1L)
             .build();
-    DocumentCreateDto createDto4 = DocumentCreateDto.builder()
+    DocumentCreateRequest createDto4 = DocumentCreateRequest.builder()
             .title("document4")
             .description("this is document4")
             .authorName("song")
@@ -115,7 +115,7 @@ class DocumentServiceImplTest {
     List<String> tagNames = Arrays.asList("church", "bible");
     List<String> tagNamesUpdated = Arrays.asList("church", "song", "map");
 
-    DocumentCreateDto createDto = DocumentCreateDto.builder()
+    DocumentCreateRequest createDto = DocumentCreateRequest.builder()
             .title("document")
             .description("this is document")
             .authorName("hong")
@@ -124,7 +124,7 @@ class DocumentServiceImplTest {
             .build();
     documentService.createDocument(createDto);
 
-    DocumentUpdateDto updateDto = DocumentUpdateDto.builder()
+    DocumentUpdateRequest updateDto = DocumentUpdateRequest.builder()
             .title("updated document")
             .description("this is document")
             .authorName("song")
@@ -147,28 +147,28 @@ class DocumentServiceImplTest {
     Member member = Member.create("song", "user@naver.com", "user1");
     memberRepository.save(member);
 
-    DocumentCreateDto createDto1 = DocumentCreateDto.builder()
+    DocumentCreateRequest createDto1 = DocumentCreateRequest.builder()
             .title("document")
             .description("this is document")
             .authorName("hong")
             .tagNames(Arrays.asList("tag1", "tag2", "tag3", "tag4", "tag5"))
             .creatorMemberId(1L)
             .build();
-    DocumentCreateDto createDto2 = DocumentCreateDto.builder()
+    DocumentCreateRequest createDto2 = DocumentCreateRequest.builder()
             .title("document2")
             .description("this is document2")
             .authorName("song")
             .tagNames(Arrays.asList("tag1", "tag2", "tag3"))
             .creatorMemberId(1L)
             .build();
-    DocumentCreateDto createDto3 = DocumentCreateDto.builder()
+    DocumentCreateRequest createDto3 = DocumentCreateRequest.builder()
             .title("document3")
             .description("this is document3")
             .authorName("song")
             .tagNames(Arrays.asList("tag2", "tag3", "tag6"))
             .creatorMemberId(1L)
             .build();
-    DocumentCreateDto createDto4 = DocumentCreateDto.builder()
+    DocumentCreateRequest createDto4 = DocumentCreateRequest.builder()
             .title("document4")
             .description("this is document4")
             .authorName("song")
@@ -180,19 +180,19 @@ class DocumentServiceImplTest {
     documentService.createDocument(createDto3);
     documentService.createDocument(createDto4);
 
-    DocumentUpdateDto updateDto1 = DocumentUpdateDto.builder()
+    DocumentUpdateRequest updateDto1 = DocumentUpdateRequest.builder()
             .title("first updated document")
             .description("this is first updated document")
             .authorName("ssong")
             .tagNames(Arrays.asList("tag1", "tag2", "tag5", "tag6", "tag9"))
             .build();
-    DocumentUpdateDto updateDto2 = DocumentUpdateDto.builder()
+    DocumentUpdateRequest updateDto2 = DocumentUpdateRequest.builder()
             .title("first updated document")
             .description("this is first updated document")
             .authorName("ssong")
             .tagNames(Arrays.asList("tag10"))
             .build();
-    DocumentUpdateDto updateDto4 = DocumentUpdateDto.builder()
+    DocumentUpdateRequest updateDto4 = DocumentUpdateRequest.builder()
             .title("second updated document")
             .description("this is second updated document")
             .authorName("hacker")
@@ -217,28 +217,28 @@ class DocumentServiceImplTest {
     Member member = Member.create("song", "user@naver.com", "user1");
     memberRepository.save(member);
 
-    DocumentCreateDto createDto1 = DocumentCreateDto.builder()
+    DocumentCreateRequest createDto1 = DocumentCreateRequest.builder()
             .title("document")
             .description("this is document")
             .authorName("hong")
             .tagNames(Arrays.asList("tag1", "tag2", "tag3", "tag4", "tag5"))
             .creatorMemberId(1L)
             .build();
-    DocumentCreateDto createDto2 = DocumentCreateDto.builder()
+    DocumentCreateRequest createDto2 = DocumentCreateRequest.builder()
             .title("document2")
             .description("this is document2")
             .authorName("song")
             .tagNames(Arrays.asList("tag1", "tag2", "tag3"))
             .creatorMemberId(1L)
             .build();
-    DocumentCreateDto createDto3 = DocumentCreateDto.builder()
+    DocumentCreateRequest createDto3 = DocumentCreateRequest.builder()
             .title("document3")
             .description("this is document3")
             .authorName("song")
             .tagNames(Arrays.asList("tag2", "tag3", "tag6"))
             .creatorMemberId(1L)
             .build();
-    DocumentCreateDto createDto4 = DocumentCreateDto.builder()
+    DocumentCreateRequest createDto4 = DocumentCreateRequest.builder()
             .title("document4")
             .description("this is document4")
             .authorName("song")
