@@ -8,7 +8,9 @@ import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.younginhambak.backend.file.DocumentFile;
+import org.hibernate.annotations.SQLRestriction;
+import org.younginhambak.backend.file.entity.DataFile;
+import org.younginhambak.backend.file.entity.DocumentFile;
 import org.younginhambak.backend.member.Member;
 import org.younginhambak.backend.tag.Tag;
 
@@ -58,7 +60,7 @@ public class Document {
   @JoinColumn(name = "member_id")
   private Member member;
 
-  @OneToMany(mappedBy = "document", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+  @OneToMany(mappedBy = "document", fetch = FetchType.LAZY)
   private List<DocumentFile> files = new ArrayList<>();
 
   @OneToMany(mappedBy = "document", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -162,6 +164,12 @@ public class Document {
     return documentTags.stream()
             .map(DocumentTag::getTag)
             .map(Tag::getName)
+            .toList();
+  }
+
+  public List<Long> getFileIds(){
+    return getFiles().stream()
+            .map(DataFile::getId)
             .toList();
   }
 

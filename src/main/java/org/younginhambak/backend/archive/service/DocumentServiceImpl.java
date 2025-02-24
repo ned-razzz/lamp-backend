@@ -4,18 +4,22 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.younginhambak.backend.archive.dto.DocumentCreateRequest;
-import org.younginhambak.backend.archive.dto.DocumentGetResponse;
+import org.younginhambak.backend.archive.dto.DocumentDetailResponse;
+import org.younginhambak.backend.archive.dto.DocumentInfoResponse;
 import org.younginhambak.backend.archive.dto.DocumentUpdateRequest;
 import org.younginhambak.backend.archive.entity.Document;
 import org.younginhambak.backend.archive.entity.DocumentTag;
 import org.younginhambak.backend.archive.entity.DocumentTagId;
 import org.younginhambak.backend.archive.repository.DocumentRepository;
 import org.younginhambak.backend.archive.repository.DocumentTagRepository;
+import org.younginhambak.backend.file.entity.DocumentFile;
+import org.younginhambak.backend.file.service.DocumentFileService;
 import org.younginhambak.backend.member.Member;
 import org.younginhambak.backend.member.service.MemberService;
 import org.younginhambak.backend.tag.Tag;
 import org.younginhambak.backend.tag.service.TagService;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +31,7 @@ public class DocumentServiceImpl implements DocumentService {
 
   private final DocumentRepository documentRepository;
   private final DocumentTagRepository documentTagRepository;
+  private final DocumentFileService documentFileService;
   private final MemberService memberService;
   private final TagService tagService;
 
@@ -41,28 +46,31 @@ public class DocumentServiceImpl implements DocumentService {
   }
 
   @Override
-  public DocumentGetResponse readDocument(Long documentId) {
+  public DocumentDetailResponse readDocument(Long documentId) {
     Document document = documentRepository.findById(documentId).orElseThrow();
-    return DocumentGetResponse.builder()
+    List<URL> urls = documentFileService.downloadFiles(document.getFileIds());
+    return DocumentDetailResponse.builder()
             .id(document.getId())
             .title(document.getTitle())
             .description(document.getDescription())
             .authorName(document.getAuthorName())
+            .tags(document.getTagNames().stream().toList())
+            .fileUrls(urls)
             .created(document.getCreated())
             .updated(document.getUpdated())
             .build();
   }
 
   @Override
-  public List<DocumentGetResponse> readDocumentAll() {
+  public List<DocumentInfoResponse> readDocumentInfos() {
     List<Document> documents = documentRepository.findAll();
     return documents.stream().
             map(document ->
-                    DocumentGetResponse.builder()
+                    DocumentInfoResponse.builder()
                             .id(document.getId())
                             .title(document.getTitle())
-                            .description(document.getDescription())
                             .authorName(document.getAuthorName())
+                            .tags(document.getTagNames().stream().limit(3).toList())
                             .created(document.getCreated())
                             .updated(document.getUpdated())
                             .build())
@@ -74,7 +82,7 @@ public class DocumentServiceImpl implements DocumentService {
   @Transactional
   public void createDocument(DocumentCreateRequest createDto) {
     Member member = memberService.getMember(createDto.getCreatorMemberId()).orElseThrow();
-
+    List<DocumentFile> documentFiles = documentFileService.getFiles(createDto.getFileIds());
     List<DocumentTag> documentTags = getOrCreateDocumentTags(createDto.getTagNames());
 
     Document document = Document.create(
@@ -82,8 +90,7 @@ public class DocumentServiceImpl implements DocumentService {
             createDto.getDescription(),
             createDto.getAuthorName(),
             member,
-            //todo 나중에 file 파라미터로 받아서 DocumentFile 생성
-            List.of(),
+            documentFiles,
             documentTags
     );
     documentRepository.save(document);
@@ -93,14 +100,14 @@ public class DocumentServiceImpl implements DocumentService {
   @Transactional
   public void updateDocument(Long documentId, DocumentUpdateRequest updateDto) {
     Document document = documentRepository.findById(documentId).orElseThrow(IllegalStateException::new);
-
+    List<DocumentFile> documentFiles = documentFileService.getFiles(updateDto.getFileIds());
     List<DocumentTag> documentTags = getOrCreateDocumentTags(documentId, updateDto.getTagNames());
 
     document.update(
             updateDto.getTitle(),
             updateDto.getDescription(),
             updateDto.getAuthorName(),
-            List.of(),
+            documentFiles,
             documentTags
     );
   }

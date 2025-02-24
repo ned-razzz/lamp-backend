@@ -1,24 +1,21 @@
 package org.younginhambak.backend.archive.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
+import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-public class DocumentCreateRequest {
-
+public class DocumentDetailResponse {
   @NotNull
-  private Long creatorMemberId;
+  private Long id;
 
   @NotBlank
   @Size(min = 3, max = 100)
@@ -30,8 +27,13 @@ public class DocumentCreateRequest {
   @Size(min = 3, max = 30)
   private String authorName;
 
-  @NotEmpty
-  private List<Long> fileIds;
+  private List<String> tags;
 
-  private List<String> tagNames;
+  private List<URL> fileUrls;
+
+  @PastOrPresent
+  private LocalDateTime created;
+
+  @PastOrPresent
+  private LocalDateTime updated;
 }

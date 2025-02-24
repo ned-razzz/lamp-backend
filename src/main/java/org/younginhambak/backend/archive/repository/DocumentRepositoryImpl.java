@@ -22,7 +22,7 @@ public class DocumentRepositoryImpl implements DocumentRepository {
   @Override
   public Optional<Document> findById(Long id) {
     Document document = em.find(Document.class, id);
-    return Optional.of(document);
+    return Optional.ofNullable(document);
   }
 
   @Override

@@ -8,10 +8,11 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
-public class DocumentGetResponse {
+public class DocumentInfoResponse {
   @NotNull
   private Long id;
 
@@ -19,11 +20,10 @@ public class DocumentGetResponse {
   @Size(min = 3, max = 100)
   private String title;
 
-  @Size(max = 500)
-  private String description;
-
   @Size(min = 3, max = 30)
   private String authorName;
+
+  private List<String> tags;
 
   @PastOrPresent
   private LocalDateTime created;
