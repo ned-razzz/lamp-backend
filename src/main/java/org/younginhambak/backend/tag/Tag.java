@@ -7,7 +7,8 @@ import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.younginhambak.backend.archive.DocumentTag;
+import org.hibernate.annotations.SQLRestriction;
+import org.younginhambak.backend.archive.entity.DocumentTag;
 import org.younginhambak.backend.gallery.PhotoTag;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ import java.util.List;
  * @version 1.0
  */
 @Entity
+@SQLRestriction("status = 'ACTIVE'")
 @Getter
 @NoArgsConstructor
 public class Tag {
@@ -63,6 +65,8 @@ public class Tag {
     Tag tag = new Tag();
     tag.name = name;
     tag.status = TagStatus.ACTIVE;
+    tag.created = LocalDateTime.now();
+    tag.updated= LocalDateTime.now();
     return tag;
   }
 
@@ -76,5 +80,9 @@ public class Tag {
 
     status = TagStatus.DELETED;
     updated = LocalDateTime.now();
+  }
+
+  public boolean isSameName(String name) {
+    return this.name.equals(name);
   }
 }

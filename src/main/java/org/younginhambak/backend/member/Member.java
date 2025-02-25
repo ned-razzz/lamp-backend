@@ -4,7 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.younginhambak.backend.archive.Document;
+import org.hibernate.annotations.SQLRestriction;
+import org.younginhambak.backend.archive.entity.Document;
 import org.younginhambak.backend.gallery.Photo;
 import org.younginhambak.backend.role.Role;
 
@@ -18,6 +19,7 @@ import java.util.List;
  * @version 1.0
  */
 @Entity
+@SQLRestriction("status = 'ACTIVE'")
 @Getter
 @NoArgsConstructor
 public class Member {
@@ -31,7 +33,7 @@ public class Member {
   private String name;
 
   @NotBlank
-  @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9][.][A-Za-z]{2,}$")
+  @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9]+[.][A-Za-z]{2,}$")
   private String email;
 
   @NotBlank
@@ -80,6 +82,9 @@ public class Member {
     member.name = name;
     member.email = email;
     member.nickname = nickname;
+    member.status = MemberStatus.ACTIVE;
+    member.created = LocalDateTime.now();
+    member.updated = LocalDateTime.now();
 
     return member;
   }

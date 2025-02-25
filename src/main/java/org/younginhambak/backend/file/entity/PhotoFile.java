@@ -1,4 +1,4 @@
-package org.younginhambak.backend.file;
+package org.younginhambak.backend.file.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -44,19 +44,19 @@ public class PhotoFile extends DataFile {
   /**
    * 새로운 PhotoFile을 작성합니다.
    * @param fileName 파일 이름
-   * @param savedUrl 저장된 주소
+   * @param fileKey 저장된 주소
    * @param extension 피일 확장자
    * @return 새로 생성된 PhotoFile 객체
    */
   public static PhotoFile create(
           String fileName,
-          String savedUrl,
+          String fileKey,
           FileExtension extension
   ) {
     PhotoFile photoFile = new PhotoFile();
     photoFile.setFileName(fileName);
-    photoFile.setSavedUrl(savedUrl);
-    if (!photoFile.isPhotoExtension(extension)) {
+    photoFile.setFileKey(fileKey);
+    if (photoFile.isPhotoExtension(extension)) {
       photoFile.setExtension(extension);
     }
 

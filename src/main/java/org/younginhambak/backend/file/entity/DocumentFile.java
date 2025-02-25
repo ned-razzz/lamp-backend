@@ -1,10 +1,10 @@
-package org.younginhambak.backend.file;
+package org.younginhambak.backend.file.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.younginhambak.backend.archive.Document;
+import org.younginhambak.backend.archive.entity.Document;
 
 import java.time.LocalDateTime;
 import java.util.EnumSet;
@@ -21,8 +21,11 @@ import java.util.EnumSet;
 public class DocumentFile extends DataFile {
 
   public static final EnumSet<FileExtension> documentExtensions = EnumSet.of(
-          FileExtension.DOC, FileExtension.HWP, FileExtension.PDF,
-          FileExtension.PPT, FileExtension.TXT
+          FileExtension.PDF, FileExtension.TXT,
+          FileExtension.DOC, FileExtension.DOCX,
+          FileExtension.XLS, FileExtension.XLSX,
+          FileExtension.PPT, FileExtension.PPTX,
+          FileExtension.HWP, FileExtension.HWPX
   );
 
   // Entity Correlation
@@ -32,11 +35,17 @@ public class DocumentFile extends DataFile {
 
   // Relationship Convenience Method
   public void addDocument(Document document) {
+    if (document == null) {
+      throw new IllegalArgumentException("document parameter is null");
+    }
     this.document = document;
     document.getFiles().add(this);
   }
 
-  private void removeDocument() {
+  public void removeDocument() {
+    if (document == null) {
+      return;
+    }
     document.getFiles().remove(this);
     document = null;
   }
@@ -45,20 +54,21 @@ public class DocumentFile extends DataFile {
   /**
    * 새로운 DoucmentFile을 작성합니다.
    * @param fileName 파일 이름
-   * @param savedUrl 저장된 주소
+   * @param fileKey 저장된 주소
    * @param extension 피일 확장자
    * @return 새로 생성된 DocumentFile 객체
    */
   public static DocumentFile create(
           String fileName,
-          String savedUrl,
+          String fileKey,
           FileExtension extension
   ) {
     DocumentFile documentFile = new DocumentFile();
     documentFile.setFileName(fileName);
-    documentFile.setSavedUrl(savedUrl);
+    documentFile.setFileKey(fileKey);
     if (documentFile.isDocumentExtension(extension)) {
       documentFile.setExtension(extension);
+    } else {      throw new IllegalArgumentException("Invalid document file extension.");
     }
 
     documentFile.setStatus(DataFileStatus.ACTIVE);
@@ -71,7 +81,6 @@ public class DocumentFile extends DataFile {
    * DocumentFile 객체를 삭제합니다.
    */
   public void delete() {
-    removeDocument();
     setStatus(DataFileStatus.DELETED);
     setUpdated(LocalDateTime.now());
   }

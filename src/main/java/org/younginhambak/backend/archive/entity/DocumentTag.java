@@ -1,4 +1,4 @@
-package org.younginhambak.backend.archive;
+package org.younginhambak.backend.archive.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -17,7 +17,7 @@ import org.younginhambak.backend.tag.Tag;
 public class DocumentTag {
 
   @EmbeddedId
-  private DocumentTagId id;
+  private DocumentTagId id = new DocumentTagId();
 
   // Entity Correlation
   @MapsId("documentId")

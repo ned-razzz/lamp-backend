@@ -1,8 +1,8 @@
 package org.younginhambak.backend.gallery;
 
 import org.junit.jupiter.api.Test;
-import org.younginhambak.backend.file.FileExtension;
-import org.younginhambak.backend.file.PhotoFile;
+import org.younginhambak.backend.file.entity.FileExtension;
+import org.younginhambak.backend.file.entity.PhotoFile;
 import org.younginhambak.backend.member.Member;
 import org.younginhambak.backend.tag.Tag;
 

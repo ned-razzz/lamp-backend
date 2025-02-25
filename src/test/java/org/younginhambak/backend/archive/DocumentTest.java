@@ -1,8 +1,11 @@
 package org.younginhambak.backend.archive;
 
 import org.junit.jupiter.api.Test;
-import org.younginhambak.backend.file.DocumentFile;
-import org.younginhambak.backend.file.FileExtension;
+import org.younginhambak.backend.archive.entity.Document;
+import org.younginhambak.backend.archive.entity.DocumentStatus;
+import org.younginhambak.backend.archive.entity.DocumentTag;
+import org.younginhambak.backend.file.entity.DocumentFile;
+import org.younginhambak.backend.file.entity.FileExtension;
 import org.younginhambak.backend.member.Member;
 import org.younginhambak.backend.tag.Tag;
 
@@ -37,8 +40,6 @@ class DocumentTest {
     Document document = createDocument(documentFiles, documentTags);
 
     //when
-    Member memberU = Member.create("memberu", "memberu@gmail.com", "nicknameu");
-
     DocumentFile fileU = DocumentFile.create("fileu", "urlu", FileExtension.TXT);
     ArrayList<DocumentFile> filesU = new ArrayList<>();
     filesU.add(documentFiles.get(1));
@@ -54,14 +55,11 @@ class DocumentTest {
     documentTagsU.add(documentTagU2);
 
     document.update("titleu", "descriptionu", "authoru",
-            memberU,
             filesU,
             documentTagsU
             );
 
     //then
-    assertThat(document.getMember().getNickname()).isEqualTo(memberU.getNickname());
-
     assertThat(document.getFiles()).hasSize(2);
     assertThat(document.getFiles()).containsAll(filesU);
     assertThat(document.getFiles()).doesNotContain(documentFiles.get(0));
@@ -125,7 +123,7 @@ class DocumentTest {
 
   public List<DocumentFile> createDocumentFiles() {
     DocumentFile file1 = DocumentFile.create("file1", "url1", FileExtension.PDF);
-    DocumentFile file2 = DocumentFile.create("file2", "url2", FileExtension.DOC);
+    DocumentFile file2 = DocumentFile.create("file2", "url2", FileExtension.DOCX);
     ArrayList<DocumentFile> files = new ArrayList<>();
     files.add(file1);
     files.add(file2);
