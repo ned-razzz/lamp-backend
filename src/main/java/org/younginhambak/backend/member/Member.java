@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
 import org.younginhambak.backend.archive.entity.Document;
-import org.younginhambak.backend.gallery.Photo;
+import org.younginhambak.backend.gallery.entity.Photo;
 import org.younginhambak.backend.role.Role;
 
 import java.time.LocalDateTime;
