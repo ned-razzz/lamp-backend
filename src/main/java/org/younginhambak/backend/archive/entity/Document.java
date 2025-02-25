@@ -115,6 +115,9 @@ public class Document {
 
     document.addMember(member);
     files.forEach(file -> {
+      if (file.getDocument() != null) {
+        throw new RuntimeException("이미 다른 document의 file을 빼앗을 수 없습니다.");
+      }
       file.addDocument(document);
     });
     documentTags.forEach(documentTag -> {
@@ -153,7 +156,6 @@ public class Document {
    * 해당 Document 객체와 연관관계가 설정된 DocumentFile, DocumentTag 객체들은 삭제 처리됩니다. (DB 작업은 따로 필요합니다.)
    */
   public void delete() {
-    removeMember();
     new ArrayList<>(files).forEach(DocumentFile::delete);
     new ArrayList<>(documentTags).forEach(DocumentTag::delete);
 
