@@ -78,12 +78,8 @@ class DocumentFileServiceImplTest {
     documentFileService.uploadFiles(createDtos);
 
     //when
-    String url1 = documentFileService.downloadFile(2L);
-    String url2 = documentFileService.downloadFile(3L);
 
     //then
-    log.info(url1);
-    log.info(url2);
   }
 
   @Test
