@@ -22,6 +22,7 @@ import org.younginhambak.backend.tag.service.TagService;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -46,8 +47,17 @@ public class DocumentServiceImpl implements DocumentService {
   }
 
   @Override
-  public DocumentDetailResponse readDocument(Long documentId) {
-    Document document = documentRepository.findById(documentId).orElseThrow();
+  public List<DocumentTag> getDocumentTags(List<DocumentTagId> documentTagIds) {
+    List<DocumentTag> documentTags = documentTagRepository.findByIdsIn(documentTagIds);
+    if (documentTags.size() != documentTagIds.size()) {
+      throw new NoSuchElementException("documentTag ids 중에 존재하지 않는 record의 id가 있습니다.");
+    }
+    return documentTags;
+  }
+
+  @Override
+  public DocumentDetailResponse readDocumentDetail(Long documentId) {
+    Document document = getDocument(documentId).orElseThrow();
     List<URL> urls = documentFileService.downloadFiles(document.getFileIds());
     return DocumentDetailResponse.builder()
             .id(document.getId())
@@ -62,8 +72,8 @@ public class DocumentServiceImpl implements DocumentService {
   }
 
   @Override
-  public List<DocumentInfoResponse> readDocumentInfos() {
-    List<Document> documents = documentRepository.findAll();
+  public List<DocumentInfoResponse> readDocumentsInfo() {
+    List<Document> documents = getDocumentAll();
     return documents.stream().
             map(document ->
                     DocumentInfoResponse.builder()
@@ -99,7 +109,7 @@ public class DocumentServiceImpl implements DocumentService {
   @Override
   @Transactional
   public void updateDocument(Long documentId, DocumentUpdateRequest updateDto) {
-    Document document = documentRepository.findById(documentId).orElseThrow(IllegalStateException::new);
+    Document document = getDocument(documentId).orElseThrow();
     List<DocumentFile> documentFiles = documentFileService.getFiles(updateDto.getFileIds());
     List<DocumentTag> documentTags = getOrCreateDocumentTags(documentId, updateDto.getTagNames());
 
@@ -115,7 +125,7 @@ public class DocumentServiceImpl implements DocumentService {
   @Override
   @Transactional
   public void deleteDocument(Long documentId) {
-    Document document = documentRepository.findById(documentId).orElseThrow();
+    Document document = getDocument(documentId).orElseThrow();
     document.delete();
   }
 
@@ -150,7 +160,7 @@ public class DocumentServiceImpl implements DocumentService {
             .forEach(documentTags::add);
 
     //이미 영속성에 관리되는 Tag들 중에 이미 DocumentTag로 연결되어 있으면 불러오기
-    List<DocumentTag> persistentDocumentTags = documentTagRepository.findByIdsIn(
+    List<DocumentTag> persistentDocumentTags = getDocumentTags(
             tagsSeparator.persistentTags.stream()
                     .map(tag -> new DocumentTagId(documentId, tag.getId()))
                     .toList()
@@ -166,7 +176,7 @@ public class DocumentServiceImpl implements DocumentService {
     return documentTags;
   }
 
-  //영속성으로 관리되는 Tag는 가져오고 아닌 Tag는 생성
+  //해당 태그가 이미 DB에 존재하는지 아닌지 검증하고 분리
   private TagNamesSeparator separateTagNamesByPersistence(List<String> tagNames) {
     List<String> existTagNames = tagService.filterExistTagNames(tagNames);
     List<String> nonexistTagNames = tagNames.stream()
@@ -175,6 +185,7 @@ public class DocumentServiceImpl implements DocumentService {
     return new TagNamesSeparator(existTagNames, nonexistTagNames);
   }
 
+  //영속성으로 관리되는 Tag는 가져오고 아닌 Tag는 생성
   private TagsSeparator createTags(TagNamesSeparator namesSeparator) {
     return new TagsSeparator(
             namesSeparator.existTagNames.stream().map(tagName -> tagService.getTagByName(tagName).orElseThrow()).toList(),

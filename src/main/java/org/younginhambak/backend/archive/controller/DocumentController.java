@@ -23,13 +23,13 @@ public class DocumentController {
   @GetMapping("/{documentId}")
   public DocumentDetailResponse getDocumentDetail(@PathVariable Long documentId) {
     log.info("GET /documents/{}", documentId);
-    return documentService.readDocument(documentId);
+    return documentService.readDocumentDetail(documentId);
   }
 
   @GetMapping
   public List<DocumentInfoResponse> getDocumentInfoList() {
     log.info("GET /documents");
-    return documentService.readDocumentInfos();
+    return documentService.readDocumentsInfo();
   }
 
   @ResponseStatus(HttpStatus.CREATED)
