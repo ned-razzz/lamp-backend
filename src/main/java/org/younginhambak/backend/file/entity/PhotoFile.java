@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.younginhambak.backend.gallery.Photo;
+import org.younginhambak.backend.gallery.entity.Photo;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
@@ -32,13 +32,15 @@ public class PhotoFile extends DataFile {
 
   // Relationship Convenience Method
   public void addPhoto(Photo photo) {
+    Assert.notNull(photo, "photo parameter is null");
     this.photo = photo;
     photo.addFile(this);
   }
 
   public void removePhoto() {
-    this.photo.removeFile();
-    this.photo = null;
+    Assert.notNull(photo, "photo field of entity is null");
+    photo.removeFile();
+    photo = null;
   }
 
   // Business Logic
@@ -54,12 +56,12 @@ public class PhotoFile extends DataFile {
           String fileKey,
           FileExtension extension
   ) {
+
     PhotoFile photoFile = new PhotoFile();
     photoFile.setFileName(fileName);
     photoFile.setFileKey(fileKey);
-    if (photoFile.isPhotoExtension(extension)) {
-      photoFile.setExtension(extension);
-    }
+    Assert.isTrue(isPhotoExtension(extension), "Invalid photo file extension.");
+    photoFile.setExtension(extension);
 
     photoFile.setStatus(DataFileStatus.ACTIVE);
     photoFile.setCreated(LocalDateTime.now());
@@ -71,7 +73,6 @@ public class PhotoFile extends DataFile {
    * DocumentFile 객체를 삭제합니다.
    */
   public void delete() {
-    removePhoto();
     setStatus(DataFileStatus.DELETED);
     setUpdated(LocalDateTime.now());
   }
@@ -81,7 +82,7 @@ public class PhotoFile extends DataFile {
    * @param extension 파일 확장자
    * @return 허용하는 확장자이면 true, 아니면 false
    */
-  public boolean isPhotoExtension(FileExtension extension) {
+  public static boolean isPhotoExtension(FileExtension extension) {
     return photoExtensions.contains(extension);
   }
 }
