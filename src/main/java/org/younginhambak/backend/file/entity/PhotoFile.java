@@ -32,13 +32,13 @@ public class PhotoFile extends DataFile {
 
   // Relationship Convenience Method
   public void addPhoto(Photo photo) {
-    Assert.notNull(photo, "photo parameter is null");
+    Assert.notNull(photo, "photo parameter is null.");
     this.photo = photo;
     photo.addFile(this);
   }
 
   public void removePhoto() {
-    Assert.notNull(photo, "photo field of entity is null");
+    Assert.state(photo != null, "photo field is already null.");
     photo.removeFile();
     photo = null;
   }
@@ -56,11 +56,10 @@ public class PhotoFile extends DataFile {
           String fileKey,
           FileExtension extension
   ) {
-
     PhotoFile photoFile = new PhotoFile();
     photoFile.setFileName(fileName);
     photoFile.setFileKey(fileKey);
-    Assert.isTrue(isPhotoExtension(extension), "Invalid photo file extension.");
+    Assert.isTrue(photoFile.isPhotoExtension(extension), "Invalid photo file extension.");
     photoFile.setExtension(extension);
 
     photoFile.setStatus(DataFileStatus.ACTIVE);
@@ -73,6 +72,7 @@ public class PhotoFile extends DataFile {
    * DocumentFile 객체를 삭제합니다.
    */
   public void delete() {
+    removePhoto();
     setStatus(DataFileStatus.DELETED);
     setUpdated(LocalDateTime.now());
   }
@@ -82,7 +82,7 @@ public class PhotoFile extends DataFile {
    * @param extension 파일 확장자
    * @return 허용하는 확장자이면 true, 아니면 false
    */
-  public static boolean isPhotoExtension(FileExtension extension) {
+  public boolean isPhotoExtension(FileExtension extension) {
     return photoExtensions.contains(extension);
   }
 }
