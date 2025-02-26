@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.Assert;
 import org.younginhambak.backend.gallery.Photo;
 
 import java.time.LocalDateTime;
@@ -31,13 +32,15 @@ public class PhotoFile extends DataFile {
 
   // Relationship Convenience Method
   public void addPhoto(Photo photo) {
+    Assert.notNull(photo, "photo parameter is null.");
     this.photo = photo;
     photo.addFile(this);
   }
 
   public void removePhoto() {
-    this.photo.removeFile();
-    this.photo = null;
+    Assert.state(photo != null, "photo field is already null.");
+    photo.removeFile();
+    photo = null;
   }
 
   // Business Logic
@@ -56,9 +59,8 @@ public class PhotoFile extends DataFile {
     PhotoFile photoFile = new PhotoFile();
     photoFile.setFileName(fileName);
     photoFile.setFileKey(fileKey);
-    if (photoFile.isPhotoExtension(extension)) {
-      photoFile.setExtension(extension);
-    }
+    Assert.isTrue(photoFile.isPhotoExtension(extension), "Invalid photo file extension.");
+    photoFile.setExtension(extension);
 
     photoFile.setStatus(DataFileStatus.ACTIVE);
     photoFile.setCreated(LocalDateTime.now());
@@ -70,7 +72,6 @@ public class PhotoFile extends DataFile {
    * DocumentFile 객체를 삭제합니다.
    */
   public void delete() {
-    removePhoto();
     setStatus(DataFileStatus.DELETED);
     setUpdated(LocalDateTime.now());
   }
