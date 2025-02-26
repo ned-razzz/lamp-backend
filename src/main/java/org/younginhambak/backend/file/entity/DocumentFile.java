@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.Assert;
 import org.younginhambak.backend.archive.entity.Document;
 
 import java.time.LocalDateTime;
@@ -35,17 +36,13 @@ public class DocumentFile extends DataFile {
 
   // Relationship Convenience Method
   public void addDocument(Document document) {
-    if (document == null) {
-      throw new IllegalArgumentException("document parameter is null");
-    }
+    Assert.notNull(document, "document parameter is null");
     this.document = document;
     document.getFiles().add(this);
   }
 
   public void removeDocument() {
-    if (document == null) {
-      return;
-    }
+    Assert.state(document != null, "document field is already null");
     document.getFiles().remove(this);
     document = null;
   }
@@ -66,10 +63,9 @@ public class DocumentFile extends DataFile {
     DocumentFile documentFile = new DocumentFile();
     documentFile.setFileName(fileName);
     documentFile.setFileKey(fileKey);
-    if (documentFile.isDocumentExtension(extension)) {
-      documentFile.setExtension(extension);
-    } else {      throw new IllegalArgumentException("Invalid document file extension.");
-    }
+    Assert.isTrue(documentFile.isDocumentExtension(extension), "Invalid document file extension.");
+    documentFile.setExtension(extension);
+
 
     documentFile.setStatus(DataFileStatus.ACTIVE);
     documentFile.setCreated(LocalDateTime.now());

@@ -14,7 +14,7 @@ import org.younginhambak.backend.file.entity.FileExtension;
 @AllArgsConstructor
 @Builder
 public class DocumentFileUploadRequest {
-  @NotBlank
+  @NotNull
   private MultipartFile file;
 
   @NotBlank
