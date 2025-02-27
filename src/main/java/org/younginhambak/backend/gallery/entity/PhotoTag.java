@@ -16,7 +16,7 @@ import org.younginhambak.backend.tag.Tag;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PhotoTag {
   @EmbeddedId
-  private PhotoTagId id;
+  private PhotoTagId id = new PhotoTagId();
 
   // Entity Correlation
   @MapsId("photoId")

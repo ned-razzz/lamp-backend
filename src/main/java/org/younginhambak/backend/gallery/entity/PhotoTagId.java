@@ -8,6 +8,7 @@ import java.io.Serializable;
 @Embeddable
 @Getter
 @EqualsAndHashCode
+@NoArgsConstructor
 @AllArgsConstructor
 public class PhotoTagId implements Serializable {
   private Long photoId;

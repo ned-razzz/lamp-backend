@@ -9,8 +9,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
+import org.springframework.util.Assert;
 import org.younginhambak.backend.file.entity.PhotoFile;
 import org.younginhambak.backend.member.Member;
+import org.younginhambak.backend.tag.Tag;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,7 +41,6 @@ public class Photo {
   @Size(max = 300)
   private String description;
 
-  @NotBlank
   @Size(max = 30)
   private String photographer;
 
@@ -61,7 +62,7 @@ public class Photo {
   @JoinColumn(name = "member_id")
   private Member member;
 
-  @OneToMany(mappedBy = "photo", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "photo", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<PhotoTag> photoTags = new ArrayList<>();
 
   @OneToOne(mappedBy = "photo", fetch = FetchType.LAZY)
@@ -69,11 +70,13 @@ public class Photo {
 
   // Relationship Convenience Method
   public void addMember(Member member) {
+    Assert.notNull(member, "member parameter is null.");
     this.member = member;
     member.getPhotos().add(this);
   }
 
   public void removeMember() {
+    Assert.state(this.member != null, "member field is already null.");
     this.member.getPhotos().remove(this);
     this.member = null;
   }
@@ -119,6 +122,7 @@ public class Photo {
     photo.updated = LocalDateTime.now();
 
     photo.addMember(member);
+    Assert.isNull(file.getPhoto(), "the photo file already has its owner.");
     file.addPhoto(photo);
     photoTags.forEach(photoTag -> {
       photoTag.addPhoto(photo);
@@ -134,8 +138,6 @@ public class Photo {
    * @param description 사진 설명
    * @param photographer 촬영자
    * @param takenAt 활영 일자
-   * @param member 사진 소유자
-   * @param file 이미지 파일
    * @param photoTags 사진 태그들
    */
   public void update(
@@ -143,18 +145,12 @@ public class Photo {
           String description,
           String photographer,
           LocalDateTime takenAt,
-          Member member,
-          PhotoFile file,
           List<PhotoTag> photoTags) {
     this.title = title;
     this.description = description;
     this.photographer = photographer;
     this.takenAt = takenAt;
-
-    updateMember(member);
-    updateFile(file);
     updatePhotoTags(photoTags);
-
     this.updated = LocalDateTime.now();
   }
 
@@ -170,20 +166,11 @@ public class Photo {
     updated = LocalDateTime.now();
   }
 
-  private void updateMember(Member member) {
-    if (member.equals(this.member)) {
-      return;
-    }
-    removeMember();
-    addMember(member);
-  }
-
-  private void updateFile(PhotoFile file) {
-    if (file.equals(this.file)) {
-      return;
-    }
-    this.file.removePhoto();
-    file.addPhoto(this);
+  public List<String> getTagNames() {
+    return photoTags.stream()
+            .map(PhotoTag::getTag)
+            .map(Tag::getName)
+            .toList();
   }
 
   private void updatePhotoTags(List<PhotoTag> photoTags) {

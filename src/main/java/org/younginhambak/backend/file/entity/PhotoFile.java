@@ -72,7 +72,6 @@ public class PhotoFile extends DataFile {
    * DocumentFile 객체를 삭제합니다.
    */
   public void delete() {
-    removePhoto();
     setStatus(DataFileStatus.DELETED);
     setUpdated(LocalDateTime.now());
   }
