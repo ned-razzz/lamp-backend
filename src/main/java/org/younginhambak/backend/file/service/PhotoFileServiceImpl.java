@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.time.Duration;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -103,7 +104,7 @@ public class PhotoFileServiceImpl implements PhotoFileService {
     );
     return presignedRequest.url();
   }
-
+  
   private String generateUniqueKey(String fileName) {
     String uuid = UUID.randomUUID().toString();
     return fileName + "_" + uuid;
