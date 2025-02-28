@@ -173,7 +173,7 @@ public class Document {
     List<DocumentFile> list = this.files.stream()
             .filter(file -> !files.contains(file))
             .toList();
-    list.forEach(DocumentFile::delete);
+    list.forEach(DocumentFile::removeDocument);
 
     // 이미 존재하는 파일들을 제외하고 새 파일들 추가
     files.stream()
