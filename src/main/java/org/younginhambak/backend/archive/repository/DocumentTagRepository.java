@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface DocumentTagRepository {
   Optional<DocumentTag> findById(DocumentTagId id);
   List<DocumentTag> findByIdsIn(List<DocumentTagId> ids);
+  List<DocumentTag> findByDocumentId(Long documentId);
 }

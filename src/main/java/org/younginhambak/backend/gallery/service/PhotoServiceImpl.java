@@ -148,8 +148,7 @@ public class PhotoServiceImpl implements PhotoService {
     TagSplitDto tagSplitDto = tagService.splitTagNamesByExistence(tagNames);
 
     //이미 DB에 존재하는 태그 이름이면 불러와서 PhotoTag 생성
-    tagSplitDto.getExistingTagNames().stream()
-            .map(tagName -> tagService.getTagByName(tagName).orElseThrow())
+    tagService.getTagsByName(tagSplitDto.getExistingTagNames()).stream()
             .map(PhotoTag::create)
             .forEach(photoTags::add);
 

@@ -27,4 +27,11 @@ public class DocumentTagRepositoryImpl implements DocumentTagRepository {
             .setParameter("ids", ids)
             .getResultList();
   }
+
+  @Override
+  public List<DocumentTag> findByDocumentId(Long documentId) {
+    return em.createQuery("select dt from DocumentTag dt where dt.id.documentId = :documentId", DocumentTag.class)
+            .setParameter("documentId", documentId)
+            .getResultList();
+  }
 }

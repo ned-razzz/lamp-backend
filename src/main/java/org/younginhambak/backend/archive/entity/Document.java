@@ -81,16 +81,7 @@ public class Document {
     this.member = null;
   }
 
-  public void updateMember(Member member) {
-    if (member.equals(this.member)) {
-      return;
-    }
-    removeMember();
-    addMember(member);
-  }
-
   // Business Logic
-
   /**
    * 새로운 Document 객체를 생성합니다.
    * @param title 문서 제목

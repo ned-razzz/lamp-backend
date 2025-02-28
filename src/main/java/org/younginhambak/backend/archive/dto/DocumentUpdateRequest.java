@@ -17,9 +17,6 @@ import java.util.List;
 @Builder
 public class DocumentUpdateRequest {
 
-  @NotNull
-  private Long creatorMemberId;
-
   @NotBlank
   @Size(min = 3, max = 100)
   private String title;
