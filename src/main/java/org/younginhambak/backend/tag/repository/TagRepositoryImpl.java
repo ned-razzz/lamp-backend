@@ -23,6 +23,13 @@ public class TagRepositoryImpl implements TagRepository {
   }
 
   @Override
+  public List<Tag> findByNameIn(List<String> names) {
+    return em.createQuery("select t from Tag t where t.name in :names", Tag.class)
+            .setParameter("names", names)
+            .getResultList();
+  }
+
+  @Override
   public List<Tag> findAll() {
     return em.createQuery("select t from Tag t", Tag.class)
             .getResultList();

@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
 import org.younginhambak.backend.archive.entity.DocumentTag;
-import org.younginhambak.backend.gallery.PhotoTag;
+import org.younginhambak.backend.gallery.entity.PhotoTag;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

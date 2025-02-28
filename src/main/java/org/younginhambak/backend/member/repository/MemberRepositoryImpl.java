@@ -22,7 +22,7 @@ public class MemberRepositoryImpl implements MemberRepository{
   @Override
   public Optional<Member> findById(Long id) {
     Member member = em.find(Member.class, id);
-    return Optional.of(member);
+    return Optional.ofNullable(member);
   }
 
   @Override

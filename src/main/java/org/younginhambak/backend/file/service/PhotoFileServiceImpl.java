@@ -90,12 +90,8 @@ public class PhotoFileServiceImpl implements PhotoFileService {
             .toList();
   }
 
-  private String generateUniqueKey(String fileName) {
-    String uuid = UUID.randomUUID().toString();
-    return fileName + "_" + uuid;
-  }
-
-  private URL generateDownloadUrl(String fileKey, String fileName) {
+  @Override
+  public URL generateDownloadUrl(String fileKey, String fileName) {
     PresignedGetObjectRequest presignedRequest = s3Presigner.presignGetObject(presignReq -> presignReq
             .signatureDuration(presignedUrlTTL)
             .getObjectRequest(req -> req
@@ -107,5 +103,10 @@ public class PhotoFileServiceImpl implements PhotoFileService {
             )
     );
     return presignedRequest.url();
+  }
+  
+  private String generateUniqueKey(String fileName) {
+    String uuid = UUID.randomUUID().toString();
+    return fileName + "_" + uuid;
   }
 }

@@ -15,4 +15,5 @@ public interface PhotoFileService {
   void deleteFile(Long fileId);
   URL downloadFile(Long fileId);
   List<URL> downloadFiles(List<Long> fileIds);
+  URL generateDownloadUrl(String fileKey, String fileName);
 }

@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.younginhambak.backend.gallery.entity.Photo;
 import org.springframework.util.Assert;
-import org.younginhambak.backend.gallery.Photo;
 
 import java.time.LocalDateTime;
 import java.util.EnumSet;
