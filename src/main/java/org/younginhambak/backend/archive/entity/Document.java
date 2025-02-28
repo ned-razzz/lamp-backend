@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
+import org.springframework.util.Assert;
 import org.younginhambak.backend.file.entity.DataFile;
 import org.younginhambak.backend.file.entity.DocumentFile;
 import org.younginhambak.backend.member.Member;
@@ -69,11 +70,13 @@ public class Document {
 
   // Relationship Convenience Method
   public void addMember(Member member) {
+    Assert.notNull(member, "member parameter is null.");
     this.member = member;
     member.getDocuments().add(this);
   }
 
   public void removeMember() {
+    Assert.state(this.member != null, "member field is already null.");
     this.member.getDocuments().remove(this);
     this.member = null;
   }
@@ -115,9 +118,7 @@ public class Document {
 
     document.addMember(member);
     files.forEach(file -> {
-      if (file.getDocument() != null) {
-        throw new RuntimeException("이미 다른 document의 file을 빼앗을 수 없습니다.");
-      }
+      Assert.state(file.getDocument() == null, "the file is already owned by other document.");
       file.addDocument(document);
     });
     documentTags.forEach(documentTag -> {

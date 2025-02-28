@@ -36,13 +36,13 @@ public class DocumentFile extends DataFile {
 
   // Relationship Convenience Method
   public void addDocument(Document document) {
-    Assert.notNull(document, "document parameter is null");
+    Assert.notNull(document, "document parameter is null.");
     this.document = document;
     document.getFiles().add(this);
   }
 
   public void removeDocument() {
-    Assert.state(document != null, "document field is already null");
+    Assert.state(document != null, "document field is already null.");
     document.getFiles().remove(this);
     document = null;
   }

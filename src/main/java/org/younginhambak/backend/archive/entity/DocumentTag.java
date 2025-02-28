@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.Assert;
 import org.younginhambak.backend.tag.Tag;
 
 /**
@@ -32,23 +33,27 @@ public class DocumentTag {
 
   // Relationship Convenience Method
   public void addDocument(Document document) {
+    Assert.notNull(document, "document parameter is null.");
     this.document = document;
     document.getDocumentTags().add(this);
   }
 
   public void removeDocument() {
-    document.getDocumentTags().remove(this);
-    document = null;
+    Assert.state(this.document != null, "document field is already null.");
+    this.document.getDocumentTags().remove(this);
+    this.document = null;
   }
 
   public void addTag(Tag tag) {
+    Assert.notNull(tag, "tag parameter is null.");
     this.tag = tag;
     tag.getDocumentTags().add(this);
   }
 
   public void removeTag() {
-    tag.getDocumentTags().remove(this);
-    tag = null;
+    Assert.state(this.tag != null, "tag field is already null.");
+    this.tag.getDocumentTags().remove(this);
+    this.tag = null;
   }
 
   // Business Logic
