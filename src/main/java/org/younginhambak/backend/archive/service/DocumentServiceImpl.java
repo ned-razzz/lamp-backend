@@ -54,7 +54,7 @@ public class DocumentServiceImpl implements DocumentService {
   }
 
   @Override
-  public DocumentDetailResponse readDocumentDetail(Long documentId) {
+  public DocumentDetailResponse readDocument(Long documentId) {
     Document document = getDocument(documentId).orElseThrow();
     List<URL> urls = documentFileService.downloadFiles(document.getFileIds());
     return DocumentDetailResponse.builder()
@@ -67,6 +67,26 @@ public class DocumentServiceImpl implements DocumentService {
             .created(document.getCreated())
             .updated(document.getUpdated())
             .build();
+  }
+
+  @Override
+  public List<DocumentDetailResponse> readDocuments() {
+    List<Document> documents = getDocumentAll();
+    return documents.stream().map(document -> {
+      List<URL> urls = document.getFiles().stream()
+              .map(file -> documentFileService.generateDownloadUrl(file.getFileKey(), file.getFileName()))
+              .toList();
+      return DocumentDetailResponse.builder()
+              .id(document.getId())
+              .title(document.getTitle())
+              .description(document.getDescription())
+              .authorName(document.getAuthorName())
+              .tags(document.getTagNames())
+              .fileUrls(urls)
+              .created(document.getCreated())
+              .updated(document.getUpdated())
+              .build();
+    }).toList();
   }
 
   @Override

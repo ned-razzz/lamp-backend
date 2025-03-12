@@ -22,7 +22,7 @@ import java.util.*;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
-public class DocumentFileServiceImpl implements DocumentFileService{
+public class DocumentFileServiceImpl implements DocumentFileService {
 
   private final DocumentFileRepository documentFileRepository;
   private final S3Template s3Template;
@@ -113,7 +113,7 @@ public class DocumentFileServiceImpl implements DocumentFileService{
     return fileName + "_" + uuid;
   }
 
-  private URL generateDownloadUrl(String fileKey, String fileName) {
+  public URL generateDownloadUrl(String fileKey, String fileName) {
     PresignedGetObjectRequest presignedRequest = s3Presigner.presignGetObject(presignReq -> presignReq
             .signatureDuration(presignedUrlTTL)
             .getObjectRequest(req -> req

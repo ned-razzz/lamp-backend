@@ -81,8 +81,4 @@ public class Tag {
     status = TagStatus.DELETED;
     updated = LocalDateTime.now();
   }
-
-  public boolean isSameName(String name) {
-    return this.name.equals(name);
-  }
 }

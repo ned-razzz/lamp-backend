@@ -15,7 +15,8 @@ public interface DocumentService {
   Optional<Document> getDocument(Long documentId);
   List<Document> getDocumentAll();
   List<DocumentTag> getDocumentTags(List<DocumentTagId> documentTagIds);
-  DocumentDetailResponse readDocumentDetail(Long documentId);
+  DocumentDetailResponse readDocument(Long documentId);
+  List<DocumentDetailResponse> readDocuments();
   List<DocumentInfoResponse> readDocumentsInfo();
   void createDocument(DocumentCreateRequest createDto);
   void updateDocument(Long documentId, DocumentUpdateRequest updateDto);
