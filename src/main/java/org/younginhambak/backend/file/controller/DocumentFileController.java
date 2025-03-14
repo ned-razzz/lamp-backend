@@ -24,21 +24,21 @@ public class DocumentFileController {
 
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public void uploadFile(@RequestParam MultipartFile file) {
+  public Long uploadFile(@RequestParam MultipartFile file) {
     log.info("POST /files/documents : {}", file.getOriginalFilename());
 
     DocumentFileUploadRequest uploadRequest = convertUploadDto(file);
-    documentFileService.uploadFile(uploadRequest);
+    return documentFileService.uploadFile(uploadRequest);
   }
 
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping(value = "/batch", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public void uploadFiles(@RequestParam List<MultipartFile> files) {
+  public List<Long> uploadFiles(@RequestParam List<MultipartFile> files) {
     log.info("POST /files/documents/batch : {}", getFilesName(files));
     List<DocumentFileUploadRequest> uploadRequests = files.stream()
             .map(this::convertUploadDto)
             .toList();
-    documentFileService.uploadFiles(uploadRequests);
+    return documentFileService.uploadFiles(uploadRequests);
   }
 
   @DeleteMapping("/{fileId}")

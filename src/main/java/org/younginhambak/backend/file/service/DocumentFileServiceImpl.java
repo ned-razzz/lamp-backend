@@ -51,7 +51,7 @@ public class DocumentFileServiceImpl implements DocumentFileService {
 
   @Override
   @Transactional
-  public void uploadFile(DocumentFileUploadRequest uploadRequest) {
+  public Long uploadFile(DocumentFileUploadRequest uploadRequest) {
     // 원본 파일명에 UUID를 추가하여 고유한 키 생성
     String fileKey = generateUniqueKey(savedFolder + uploadRequest.getFileName());
 
@@ -65,26 +65,13 @@ public class DocumentFileServiceImpl implements DocumentFileService {
     //메타데이터 DB 저장
     DocumentFile documentFile = DocumentFile.create(uploadRequest.getFileName(), fileKey, uploadRequest.getExtension());
     documentFileRepository.save(documentFile);
+    return documentFile.getId();
   }
 
   @Override
   @Transactional
-  public void uploadFiles(List<DocumentFileUploadRequest> uploadRequests) {
-    uploadRequests.forEach(uploadDto -> {
-      // 원본 파일명에 UUID를 추가하여 고유한 키 생성
-      String fileKey = generateUniqueKey(savedFolder + uploadDto.getFileName());
-
-      // S3Template을 사용하여 파일 업로드
-      try (InputStream inputStream = uploadDto.getFile().getInputStream()) {
-        s3Template.upload(bucketName, fileKey, inputStream);
-      } catch (IOException e) {
-        throw new RuntimeException("파일 업로드 실패", e);
-      }
-
-      //메타데이터 DB 저장
-      DocumentFile documentFile = DocumentFile.create(uploadDto.getFileName(), fileKey, uploadDto.getExtension());
-      documentFileRepository.save(documentFile);
-    });
+  public List<Long> uploadFiles(List<DocumentFileUploadRequest> uploadRequests) {
+    return uploadRequests.stream().map(this::uploadFile).toList();
   }
 
   @Override

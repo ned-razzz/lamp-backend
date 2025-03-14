@@ -17,7 +17,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.time.Duration;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -52,7 +51,7 @@ public class PhotoFileServiceImpl implements PhotoFileService {
 
   @Override
   @Transactional
-  public void uploadFile(PhotoFileUploadRequest uploadRequest) {
+  public Long uploadFile(PhotoFileUploadRequest uploadRequest) {
     String fileKey = generateUniqueKey(savedFolder + uploadRequest.getFileName());
     try (InputStream inputStream = uploadRequest.getFile().getInputStream()) {
       s3Template.upload(bucketName, fileKey, inputStream);
@@ -61,12 +60,13 @@ public class PhotoFileServiceImpl implements PhotoFileService {
     }
     PhotoFile photoFile = PhotoFile.create(uploadRequest.getFileName(), fileKey, uploadRequest.getExtension());
     photoFileRepository.save(photoFile);
+    return photoFile.getId();
   }
 
   @Override
   @Transactional
-  public void uploadFiles(List<PhotoFileUploadRequest> uploadRequests) {
-    uploadRequests.forEach(this::uploadFile);
+  public List<Long> uploadFiles(List<PhotoFileUploadRequest> uploadRequests) {
+    return uploadRequests.stream().map(this::uploadFile).toList();
   }
 
   @Override

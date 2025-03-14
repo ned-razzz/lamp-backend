@@ -27,21 +27,21 @@ public class PhotoFileController {
 
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public void uploadFile(@RequestParam MultipartFile file) {
+  public Long uploadFile(@RequestParam MultipartFile file) {
     log.info("POST /files/photos : {}", file.getOriginalFilename());
 
     PhotoFileUploadRequest uploadRequest = convertUploadDto(file);
-    photoFileService.uploadFile(uploadRequest);
+    return photoFileService.uploadFile(uploadRequest);
   }
 
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping(value = "/batch", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public void uploadFiles(@RequestParam List<MultipartFile> files) {
+  public List<Long> uploadFiles(@RequestParam List<MultipartFile> files) {
     log.info("POST /files/photos/batch : {}", getFilesName(files));
     List<PhotoFileUploadRequest> uploadRequests = files.stream()
             .map(this::convertUploadDto)
             .toList();
-    photoFileService.uploadFiles(uploadRequests);
+    return photoFileService.uploadFiles(uploadRequests);
   }
 
   @DeleteMapping("/{fileId}")

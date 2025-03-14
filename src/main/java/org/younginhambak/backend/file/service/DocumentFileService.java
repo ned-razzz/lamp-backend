@@ -10,8 +10,8 @@ import java.util.Optional;
 public interface DocumentFileService {
   Optional<DocumentFile> getFile(Long fileId);
   List<DocumentFile> getFiles(List<Long> fileIds);
-  void uploadFile(DocumentFileUploadRequest uploadRequest);
-  void uploadFiles(List<DocumentFileUploadRequest> uploadRequests);
+  Long uploadFile(DocumentFileUploadRequest uploadRequest);
+  List<Long> uploadFiles(List<DocumentFileUploadRequest> uploadRequests);
   void deleteFile(Long fileId);
   URL downloadFile(Long fileId);
   List<URL> downloadFiles(List<Long> fileIds);
