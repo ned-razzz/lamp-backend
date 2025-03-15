@@ -41,4 +41,19 @@ public class TagRepositoryImpl implements TagRepository {
             .setParameter("names", names)
             .getResultList();
   }
+
+  @Override
+  public List<Tag> findTagsByRelatedDocumentsExists() {
+    String jsql = "select t from Tag t where size(t.documentTags) > 0";
+    return em.createQuery(jsql, Tag.class)
+            .getResultList();
+  }
+
+  @Override
+  public List<Tag> findTagsByRelatedPhotosExists() {
+    String jsql = "select t from Tag t where size(t.photoTags) > 0";
+    return em.createQuery(jsql, Tag.class)
+            .getResultList();
+  }
+
 }

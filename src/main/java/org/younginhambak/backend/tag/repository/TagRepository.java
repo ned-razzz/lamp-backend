@@ -11,4 +11,8 @@ public interface TagRepository {
   List<Tag> findByNameIn(List<String> names);
   List<Tag> findAll();
   List<String> findExistingNames(List<String> names);
+
+  List<Tag> findTagsByRelatedDocumentsExists();
+  List<Tag> findTagsByRelatedPhotosExists();
+
 }

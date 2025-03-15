@@ -1,6 +1,7 @@
 package org.younginhambak.backend.tag.service;
 
 import org.younginhambak.backend.tag.Tag;
+import org.younginhambak.backend.tag.dto.TagResponse;
 import org.younginhambak.backend.tag.dto.TagSplitDto;
 
 import java.util.List;
@@ -12,4 +13,6 @@ public interface TagService {
   List<Tag> getTagsByName(List<String> tagNames);
   List<String> filterExistTagNames(List<String> tagNames);
   TagSplitDto splitTagNamesByExistence(List<String> tagNames);
+  List<TagResponse> readTagsRelatedByDocuments();
+  List<TagResponse> readTagsRelatedByPhotos();
 }

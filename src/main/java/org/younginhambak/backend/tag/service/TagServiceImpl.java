@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.younginhambak.backend.tag.Tag;
+import org.younginhambak.backend.tag.dto.TagResponse;
 import org.younginhambak.backend.tag.dto.TagSplitDto;
 import org.younginhambak.backend.tag.repository.TagRepository;
 
@@ -45,5 +46,29 @@ public class TagServiceImpl implements TagService {
             .existingTagNames(existTagNames)
             .nonExistingTagNames(nonexistTagNames)
             .build();
+  }
+
+  @Override
+  public List<TagResponse> readTagsRelatedByDocuments() {
+    List<Tag> tags = tagRepository.findTagsByRelatedDocumentsExists();
+    return tags.stream()
+            .map(tag -> TagResponse.builder()
+                    .id(tag.getId())
+                    .name(tag.getName())
+                    .build()
+            )
+            .toList();
+  }
+
+  @Override
+  public List<TagResponse> readTagsRelatedByPhotos() {
+    List<Tag> tags = tagRepository.findTagsByRelatedPhotosExists();
+    return tags.stream()
+            .map(tag -> TagResponse.builder()
+                    .id(tag.getId())
+                    .name(tag.getName())
+                    .build()
+            )
+            .toList();
   }
 }
