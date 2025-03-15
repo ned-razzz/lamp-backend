@@ -6,7 +6,7 @@ import org.younginhambak.backend.archive.entity.DocumentStatus;
 import org.younginhambak.backend.archive.entity.DocumentTag;
 import org.younginhambak.backend.file.entity.DocumentFile;
 import org.younginhambak.backend.file.entity.FileExtension;
-import org.younginhambak.backend.member.Member;
+import org.younginhambak.backend.member.entity.Member;
 import org.younginhambak.backend.tag.Tag;
 
 import java.util.ArrayList;

@@ -8,7 +8,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import org.younginhambak.backend.archive.dto.DocumentCreateRequest;
 import org.younginhambak.backend.archive.dto.DocumentUpdateRequest;
-import org.younginhambak.backend.member.Member;
+import org.younginhambak.backend.member.entity.Member;
 import org.younginhambak.backend.member.repository.MemberRepository;
 
 import java.util.Arrays;
@@ -96,10 +96,10 @@ class DocumentServiceImplTest {
             .creatorMemberId(1L)
             .build();
 
-    //when
     documentService.createDocument(createDto1);
     documentService.createDocument(createDto2);
     documentService.createDocument(createDto3);
+    //when
     documentService.createDocument(createDto4);
   }
 

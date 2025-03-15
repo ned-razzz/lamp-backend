@@ -6,7 +6,7 @@ import org.younginhambak.backend.file.entity.PhotoFile;
 import org.younginhambak.backend.gallery.entity.Photo;
 import org.younginhambak.backend.gallery.entity.PhotoStatus;
 import org.younginhambak.backend.gallery.entity.PhotoTag;
-import org.younginhambak.backend.member.Member;
+import org.younginhambak.backend.member.entity.Member;
 import org.younginhambak.backend.tag.Tag;
 
 import java.time.LocalDateTime;
@@ -58,8 +58,6 @@ class PhotoTest {
             "descriptionU",
             "grapherU",
             LocalDateTime.now(),
-            member2,
-            photoFile2,
             photoTagsU
             );
 
