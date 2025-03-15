@@ -72,12 +72,12 @@ public class Tag {
 
   /**
    * Tag를 삭제합니다.
-   * 해당 Tag에 연관관계로 설정되어 있는 DocumentTag, PhotoTag들을 삭제합니다. (DB 작업 필요)
+   * 연관관계 삭제 처리는 Tag를 사용하고 있는 DocumentTag, PhotoTag에 위임합니다.
    */
   public void delete() {
-    documentTags.forEach(DocumentTag::delete);
-    photoTags.forEach(PhotoTag::delete);
-
+    if (!this.documentTags.isEmpty() || !this.photoTags.isEmpty()) {
+      return;
+    }
     status = TagStatus.DELETED;
     updated = LocalDateTime.now();
   }
