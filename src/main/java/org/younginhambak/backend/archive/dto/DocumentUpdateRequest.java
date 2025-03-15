@@ -27,8 +27,8 @@ public class DocumentUpdateRequest {
   @Size(min = 3, max = 30)
   private String authorName;
 
-  @NotEmpty
-  private List<Long> fileIds;
+//  @NotEmpty
+//  private List<Long> fileIds;
 
   private List<String> tagNames;
 }

@@ -128,14 +128,14 @@ public class DocumentServiceImpl implements DocumentService {
   @Transactional
   public void updateDocument(Long documentId, DocumentUpdateRequest updateDto) {
     Document document = getDocument(documentId).orElseThrow();
-    List<DocumentFile> documentFiles = documentFileService.getFiles(updateDto.getFileIds());
+//    List<DocumentFile> documentFiles = documentFileService.getFiles(updateDto.getFileIds());
     List<DocumentTag> documentTags = getOrCreateDocumentTags(documentId, updateDto.getTagNames());
 
     document.update(
             updateDto.getTitle(),
             updateDto.getDescription(),
             updateDto.getAuthorName(),
-            documentFiles,
+            document.getFiles(),
             documentTags
     );
   }
