@@ -1,4 +1,4 @@
-package org.younginhambak.backend.member;
+package org.younginhambak.backend.member.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;

@@ -6,7 +6,7 @@ import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.younginhambak.backend.member.Member;
+import org.younginhambak.backend.member.entity.Member;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

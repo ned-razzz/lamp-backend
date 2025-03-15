@@ -3,7 +3,8 @@ package org.younginhambak.backend.member.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.younginhambak.backend.member.Member;
+import org.younginhambak.backend.member.dto.MemberCreateDto;
+import org.younginhambak.backend.member.entity.Member;
 import org.younginhambak.backend.member.repository.MemberRepository;
 
 import java.util.List;
@@ -27,20 +28,25 @@ public class MemberServiceImpl implements MemberService {
     return memberRepository.findAll();
   }
 
-  @Override
   @Transactional
-  public void createMember() {
-
+  @Override
+  public void createMember(MemberCreateDto memberCreateDto) {
+    Member member = Member.create(
+            memberCreateDto.getName(),
+            memberCreateDto.getEmail(),
+            memberCreateDto.getNickname()
+    );
+    memberRepository.save(member);
   }
 
-  @Override
   @Transactional
+  @Override
   public void updatMember() {
 
   }
 
-  @Override
   @Transactional
+  @Override
   public void deleteMember() {
 
   }

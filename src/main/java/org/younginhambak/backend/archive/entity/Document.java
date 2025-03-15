@@ -12,7 +12,7 @@ import org.hibernate.annotations.SQLRestriction;
 import org.springframework.util.Assert;
 import org.younginhambak.backend.file.entity.DataFile;
 import org.younginhambak.backend.file.entity.DocumentFile;
-import org.younginhambak.backend.member.Member;
+import org.younginhambak.backend.member.entity.Member;
 import org.younginhambak.backend.tag.Tag;
 
 import java.time.LocalDateTime;

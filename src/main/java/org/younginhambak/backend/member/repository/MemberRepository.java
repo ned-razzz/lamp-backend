@@ -1,6 +1,6 @@
 package org.younginhambak.backend.member.repository;
 
-import org.younginhambak.backend.member.Member;
+import org.younginhambak.backend.member.entity.Member;
 
 import java.util.List;
 import java.util.Optional;

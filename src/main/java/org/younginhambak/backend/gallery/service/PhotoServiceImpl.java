@@ -15,7 +15,7 @@ import org.younginhambak.backend.gallery.entity.PhotoTag;
 import org.younginhambak.backend.gallery.entity.PhotoTagId;
 import org.younginhambak.backend.gallery.repository.PhotoRepository;
 import org.younginhambak.backend.gallery.repository.PhotoTagRepository;
-import org.younginhambak.backend.member.Member;
+import org.younginhambak.backend.member.entity.Member;
 import org.younginhambak.backend.member.service.MemberService;
 import org.younginhambak.backend.tag.Tag;
 import org.younginhambak.backend.tag.dto.TagSplitDto;

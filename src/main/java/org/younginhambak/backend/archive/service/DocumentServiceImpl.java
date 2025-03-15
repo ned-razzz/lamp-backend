@@ -15,7 +15,7 @@ import org.younginhambak.backend.archive.repository.DocumentRepository;
 import org.younginhambak.backend.archive.repository.DocumentTagRepository;
 import org.younginhambak.backend.file.entity.DocumentFile;
 import org.younginhambak.backend.file.service.DocumentFileService;
-import org.younginhambak.backend.member.Member;
+import org.younginhambak.backend.member.entity.Member;
 import org.younginhambak.backend.member.service.MemberService;
 import org.younginhambak.backend.tag.Tag;
 import org.younginhambak.backend.tag.dto.TagSplitDto;

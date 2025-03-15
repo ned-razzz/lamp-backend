@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
 import org.springframework.util.Assert;
 import org.younginhambak.backend.file.entity.PhotoFile;
-import org.younginhambak.backend.member.Member;
+import org.younginhambak.backend.member.entity.Member;
 import org.younginhambak.backend.tag.Tag;
 
 import java.time.LocalDateTime;
