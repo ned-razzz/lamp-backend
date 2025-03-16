@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.younginhambak.backend.archive.dto.DocumentCreateRequest;
-import org.younginhambak.backend.archive.dto.DocumentDetailResponse;
-import org.younginhambak.backend.archive.dto.DocumentInfoResponse;
-import org.younginhambak.backend.archive.dto.DocumentUpdateRequest;
+import org.younginhambak.backend.archive.dto.*;
 import org.younginhambak.backend.archive.service.DocumentService;
 
 import java.util.List;
@@ -27,9 +24,10 @@ public class DocumentController {
   }
 
   @GetMapping
-  public List<DocumentDetailResponse> getDocumentInfoList() {
+  public List<DocumentDetailResponse> getDocumentList(@ModelAttribute DocumentSearchRequest searchRequest) {
     log.info("GET /documents");
-    return documentService.readDocuments();
+    log.info("? title={} & tags={}", searchRequest.getTitle(), searchRequest.getTags());
+    return documentService.readDocuments(searchRequest);
   }
 
   @ResponseStatus(HttpStatus.CREATED)

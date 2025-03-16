@@ -39,11 +39,11 @@ VALUES (10, 'tag10', 'ACTIVE', NOW(), NOW());
 
 -- Document 데이터 생성
 INSERT INTO document (document_id, title, description, author_name, status, created, updated, member_id)
-VALUES (1, '공지사항 문서', '중요한 공지사항입니다', '홍길동', 'ACTIVE', NOW(), NOW(), 1);
+VALUES (1, '공지사항', '중요한 공지사항입니다', '홍길동', 'ACTIVE', NOW(), NOW(), 1);
 INSERT INTO document (document_id, title, description, author_name, status, created, updated, member_id)
-VALUES (2, '회의록', '2023년 3월 정기회의 내용입니다', '김영희', 'ACTIVE', NOW(), NOW(), 2);
+VALUES (2, '행사 공지 관련', '2023년 3월 정기회의 내용입니다', '김영희', 'ACTIVE', NOW(), NOW(), 2);
 INSERT INTO document (document_id, title, description, author_name, status, created, updated, member_id)
-VALUES (3, '행사계획서', '여름 행사 계획서입니다', '홍길동', 'ACTIVE', NOW(), NOW(), 1);
+VALUES (3, '행사계획서 ', '여름 행사 계획서입니다', '홍길동', 'ACTIVE', NOW(), NOW(), 1);
 
 -- DocumentTag 데이터 생성 (각 문서마다 여러 태그)
 INSERT INTO _document_tag (document_id, tag_id) VALUES (1, 1);  -- 공지사항 문서 - 공지사항 태그

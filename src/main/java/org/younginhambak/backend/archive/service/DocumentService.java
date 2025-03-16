@@ -1,9 +1,6 @@
 package org.younginhambak.backend.archive.service;
 
-import org.younginhambak.backend.archive.dto.DocumentCreateRequest;
-import org.younginhambak.backend.archive.dto.DocumentDetailResponse;
-import org.younginhambak.backend.archive.dto.DocumentInfoResponse;
-import org.younginhambak.backend.archive.dto.DocumentUpdateRequest;
+import org.younginhambak.backend.archive.dto.*;
 import org.younginhambak.backend.archive.entity.Document;
 import org.younginhambak.backend.archive.entity.DocumentTag;
 import org.younginhambak.backend.archive.entity.DocumentTagId;
@@ -17,6 +14,7 @@ public interface DocumentService {
   List<DocumentTag> getDocumentTags(List<DocumentTagId> documentTagIds);
   DocumentDetailResponse readDocument(Long documentId);
   List<DocumentDetailResponse> readDocuments();
+  List<DocumentDetailResponse> readDocuments(DocumentSearchRequest searchRequest);
   List<DocumentInfoResponse> readDocumentsInfo();
   void createDocument(DocumentCreateRequest createDto);
   void updateDocument(Long documentId, DocumentUpdateRequest updateDto);

@@ -1,6 +1,7 @@
 package org.younginhambak.backend.archive.repository;
 
 
+import org.younginhambak.backend.archive.dto.DocumentSearchRequest;
 import org.younginhambak.backend.archive.entity.Document;
 
 import java.util.List;
@@ -15,4 +16,6 @@ public interface DocumentRepository {
   List<Document> findByTitle(String title);
 
   List<Document> findAll();
+
+  List<Document> searchByCondition(String title, List<Long> tagIds, String sort);
 }

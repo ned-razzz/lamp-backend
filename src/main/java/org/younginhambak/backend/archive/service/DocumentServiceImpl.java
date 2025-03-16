@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-import org.younginhambak.backend.archive.dto.DocumentCreateRequest;
-import org.younginhambak.backend.archive.dto.DocumentDetailResponse;
-import org.younginhambak.backend.archive.dto.DocumentInfoResponse;
-import org.younginhambak.backend.archive.dto.DocumentUpdateRequest;
+import org.younginhambak.backend.archive.dto.*;
 import org.younginhambak.backend.archive.entity.Document;
 import org.younginhambak.backend.archive.entity.DocumentTag;
 import org.younginhambak.backend.archive.entity.DocumentTagId;
@@ -72,6 +69,30 @@ public class DocumentServiceImpl implements DocumentService {
   @Override
   public List<DocumentDetailResponse> readDocuments() {
     List<Document> documents = getDocumentAll();
+    return documents.stream().map(document -> {
+      List<URL> urls = document.getFiles().stream()
+              .map(file -> documentFileService.generateDownloadUrl(file.getFileKey(), file.getFileName()))
+              .toList();
+      return DocumentDetailResponse.builder()
+              .id(document.getId())
+              .title(document.getTitle())
+              .description(document.getDescription())
+              .authorName(document.getAuthorName())
+              .tags(document.getTagNames())
+              .fileUrls(urls)
+              .created(document.getCreated())
+              .updated(document.getUpdated())
+              .build();
+    }).toList();
+  }
+
+  @Override
+  public List<DocumentDetailResponse> readDocuments(DocumentSearchRequest searchRequest) {
+    List<Document> documents = documentRepository.searchByCondition(
+            searchRequest.getTitle(),
+            searchRequest.getTags(),
+            searchRequest.getSort()
+    );
     return documents.stream().map(document -> {
       List<URL> urls = document.getFiles().stream()
               .map(file -> documentFileService.generateDownloadUrl(file.getFileKey(), file.getFileName()))
