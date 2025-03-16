@@ -129,7 +129,7 @@ public class DocumentServiceImpl implements DocumentService {
 
   @Override
   @Transactional
-  public void createDocument(DocumentCreateRequest createDto) {
+  public Long createDocument(DocumentCreateRequest createDto) {
     Member member = memberService.getMember(createDto.getCreatorMemberId()).orElseThrow();
     List<DocumentFile> documentFiles = documentFileService.getFiles(createDto.getFileIds());
     List<DocumentTag> documentTags = getOrCreateDocumentTags(createDto.getTagNames());
@@ -143,6 +143,7 @@ public class DocumentServiceImpl implements DocumentService {
             documentTags
     );
     documentRepository.save(document);
+    return document.getId();
   }
 
   @Override

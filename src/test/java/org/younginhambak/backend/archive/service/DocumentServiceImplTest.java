@@ -1,45 +1,51 @@
 package org.younginhambak.backend.archive.service;
 
 import jakarta.persistence.EntityManager;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import org.younginhambak.backend.archive.dto.DocumentCreateRequest;
 import org.younginhambak.backend.archive.dto.DocumentUpdateRequest;
-import org.younginhambak.backend.member.entity.Member;
-import org.younginhambak.backend.member.repository.MemberRepository;
+import org.younginhambak.backend.archive.entity.Document;
+import org.younginhambak.backend.archive.entity.DocumentStatus;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
+@Sql("/test-data.sql")
+@Slf4j
 class DocumentServiceImplTest {
 
-  @Autowired
-  DocumentService documentService;
-  @Autowired
-  MemberRepository memberRepository;
-  @Autowired
-  EntityManager em;
+  @Autowired DocumentService documentService;
+  @Autowired EntityManager em;
 
   @Test
-  void getDocument() {
-
+  void readDocument() {
   }
 
   @Test
-  void getDocumentAll() {
+  void readDocuments() {
   }
 
   @Test
-  @Rollback(false)
+  void testReadDocuments() {
+  }
+
+  @Test
+  void readDocumentsInfo() {
+  }
+
+  @Test
   void createDocument() {
     //given
-    Member member = Member.create("song", "user@naver.com", "user1");
-    memberRepository.save(member);
     List<String> tagNames = Arrays.asList("church", "bible");
     DocumentCreateRequest createDto = DocumentCreateRequest.builder()
             .title("document")
@@ -47,197 +53,63 @@ class DocumentServiceImplTest {
             .authorName("hong")
             .tagNames(tagNames)
             .creatorMemberId(1L)
+            .fileIds(List.of(8L))
             .build();
 
     //when
-    documentService.createDocument(createDto);
+    Long id = documentService.createDocument(createDto);
+    log.info("id : {}", id);
 
     //then
-//    List<Document> documentAll = documentService.getDocumentAll();
-//    Document document = documentService.getDocument(1L).get();
-//    assertThat(document.getMember()).isEqualTo(member);
-//    assertThat(document.getTagNames()).containsAll(tagNames);
-//    assertThat(documentAll).isNotNull();
+    Document document = documentService.getDocument(id).get();
+
+    assertThat(document.getMember().getId()).isEqualTo(1L);
+    assertThat(document.getTitle()).isEqualTo("document");
+    assertThat(document.getDescription()).isEqualTo("this is document");
+    assertThat(document.getAuthorName()).isEqualTo("hong");
+    assertThat(document.getStatus()).isEqualTo(DocumentStatus.ACTIVE);
+    assertThat(document.getFileIds()).contains(8L);
+    assertThat(document.getTagNames()).containsAll(tagNames);
   }
 
   @Test
-  @Rollback(false)
-  public void createDocumentMany() throws Exception {
-    //given
-    Member member = Member.create("song", "user@naver.com", "user1");
-    memberRepository.save(member);
-
-    DocumentCreateRequest createDto1 = DocumentCreateRequest.builder()
-            .title("document")
-            .description("this is document")
-            .authorName("hong")
-            .tagNames(Arrays.asList("tag1", "tag2", "tag3", "tag4", "tag5"))
-            .creatorMemberId(1L)
-            .build();
-    DocumentCreateRequest createDto2 = DocumentCreateRequest.builder()
-            .title("document2")
-            .description("this is document2")
-            .authorName("song")
-            .tagNames(Arrays.asList("tag1", "tag2", "tag3"))
-            .creatorMemberId(1L)
-            .build();
-    DocumentCreateRequest createDto3 = DocumentCreateRequest.builder()
-            .title("document3")
-            .description("this is document3")
-            .authorName("song")
-            .tagNames(Arrays.asList("tag2", "tag3", "tag6"))
-            .creatorMemberId(1L)
-            .build();
-    DocumentCreateRequest createDto4 = DocumentCreateRequest.builder()
-            .title("document4")
-            .description("this is document4")
-            .authorName("song")
-            .tagNames(Arrays.asList("tag7", "tag8"))
-            .creatorMemberId(1L)
-            .build();
-
-    documentService.createDocument(createDto1);
-    documentService.createDocument(createDto2);
-    documentService.createDocument(createDto3);
-    //when
-    documentService.createDocument(createDto4);
-  }
-
-  @Test
-  @Rollback(false)
   void updateDocument() {
     //given
-    Member member = Member.create("song", "user@naver.com", "user1");
-    memberRepository.save(member);
-    List<String> tagNames = Arrays.asList("church", "bible");
-    List<String> tagNamesUpdated = Arrays.asList("church", "song", "map");
-
-    DocumentCreateRequest createDto = DocumentCreateRequest.builder()
-            .title("document")
-            .description("this is document")
-            .authorName("hong")
-            .tagNames(tagNames)
-            .creatorMemberId(1L)
-            .build();
-    documentService.createDocument(createDto);
-
+    List<String> tagNames = Arrays.asList("tag2", "tag3", "tag12");
     DocumentUpdateRequest updateDto = DocumentUpdateRequest.builder()
             .title("updated document")
-            .description("this is document")
-            .authorName("song")
-            .tagNames(tagNamesUpdated)
+            .description("this is updated document")
+            .authorName("updated user")
+            .tagNames(tagNames)
             .build();
 
     //when
-    documentService.updateDocument(1L, updateDto);
+    Long documentId = 1L;
+    documentService.updateDocument(documentId, updateDto);
 
     //then
-  }
-
-  @Test
-  @Rollback(false)
-  public void updateDocumentMany() throws Exception {
-    //given
-    Member member = Member.create("song", "user@naver.com", "user1");
-    memberRepository.save(member);
-
-    DocumentCreateRequest createDto1 = DocumentCreateRequest.builder()
-            .title("document")
-            .description("this is document")
-            .authorName("hong")
-            .tagNames(Arrays.asList("tag1", "tag2", "tag3", "tag4", "tag5"))
-            .creatorMemberId(1L)
-            .build();
-    DocumentCreateRequest createDto2 = DocumentCreateRequest.builder()
-            .title("document2")
-            .description("this is document2")
-            .authorName("song")
-            .tagNames(Arrays.asList("tag1", "tag2", "tag3"))
-            .creatorMemberId(1L)
-            .build();
-    DocumentCreateRequest createDto3 = DocumentCreateRequest.builder()
-            .title("document3")
-            .description("this is document3")
-            .authorName("song")
-            .tagNames(Arrays.asList("tag2", "tag3", "tag6"))
-            .creatorMemberId(1L)
-            .build();
-    DocumentCreateRequest createDto4 = DocumentCreateRequest.builder()
-            .title("document4")
-            .description("this is document4")
-            .authorName("song")
-            .tagNames(Arrays.asList("tag7", "tag8"))
-            .creatorMemberId(1L)
-            .build();
-    documentService.createDocument(createDto1);
-    documentService.createDocument(createDto2);
-    documentService.createDocument(createDto3);
-    documentService.createDocument(createDto4);
-
-    DocumentUpdateRequest updateDto1 = DocumentUpdateRequest.builder()
-            .title("first updated document")
-            .description("this is first updated document")
-            .authorName("ssong")
-            .tagNames(Arrays.asList("tag1", "tag2", "tag5", "tag6", "tag9"))
-            .build();
-    DocumentUpdateRequest updateDto2 = DocumentUpdateRequest.builder()
-            .title("first updated document")
-            .description("this is first updated document")
-            .authorName("ssong")
-            .tagNames(Arrays.asList("tag10"))
-            .build();
-    DocumentUpdateRequest updateDto4 = DocumentUpdateRequest.builder()
-            .title("second updated document")
-            .description("this is second updated document")
-            .authorName("hacker")
-            .tagNames(Arrays.asList("tag1", "tag2", "tag11"))
-            .build();
-
-    //when
-    documentService.updateDocument(1L, updateDto1);
-    em.flush();
-    documentService.updateDocument(1L, updateDto2);
-    em.flush();
-    documentService.updateDocument(4L, updateDto4);
-
-    //then
+    Document document = documentService.getDocument(documentId).get();
+    assertThat(document.getTitle()).isEqualTo("updated document");
+    assertThat(document.getDescription()).isEqualTo("this is updated document");
+    assertThat(document.getAuthorName()).isEqualTo("updated user");
+    assertThat(document.getStatus()).isEqualTo(DocumentStatus.ACTIVE);
+    assertThat(document.getFileIds()).contains(1L);
+    assertThat(document.getTagNames()).containsAll(tagNames);
 
   }
 
   @Test
-  @Rollback(value = false)
   void deleteDocument() {
     //given
-    Member member = Member.create("song", "user@naver.com", "user1");
-    memberRepository.save(member);
+    Long documentId = 2L;
 
-    DocumentCreateRequest createDto1 = DocumentCreateRequest.builder()
-            .title("document")
-            .description("this is document")
-            .authorName("hong")
-            .tagNames(Arrays.asList("tag1", "tag2", "tag3", "tag4", "tag5"))
-            .creatorMemberId(1L)
-            .build();
-    DocumentCreateRequest createDto2 = DocumentCreateRequest.builder()
-            .title("document2")
-            .description("this is document2")
-            .authorName("song")
-            .tagNames(Arrays.asList("tag1", "tag2", "tag3"))
-            .creatorMemberId(1L)
-            .build();
-    DocumentCreateRequest createDto3 = DocumentCreateRequest.builder()
-            .title("document3")
-            .description("this is document3")
-            .authorName("song")
-            .tagNames(Arrays.asList("tag2", "tag3", "tag6"))
-            .creatorMemberId(1L)
-            .build();
-    DocumentCreateRequest createDto4 = DocumentCreateRequest.builder()
-            .title("document4")
-            .description("this is document4")
-            .authorName("song")
-            .tagNames(Arrays.asList("tag7", "tag8"))
-            .creatorMemberId(1L)
-            .build();
+    //when
+    documentService.deleteDocument(documentId);
+    em.flush();
+    em.clear();
+
+    //then
+    Optional<Document> document = documentService.getDocument(2L);
+    assertThat(document.isPresent()).isFalse();
   }
 }

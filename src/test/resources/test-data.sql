@@ -89,6 +89,8 @@ INSERT INTO file (file_id, file_name, file_key, extension, status, created, upda
 VALUES (3, '행사계획서', 'documents/event_plan_20230505', 'PPTX', 'ACTIVE', NOW(), NOW(), 3, 'document');
 INSERT INTO file (file_id, file_name, file_key, extension, status, created, updated, document_id, dtype)
 VALUES (4, '첨부자료', 'documents/attachment_20230505', 'XLSX', 'ACTIVE', NOW(), NOW(), 3, 'document');
+INSERT INTO file (file_id, file_name, file_key, extension, status, created, updated, document_id, dtype)
+VALUES (8, 'file5', 'documents/attachment_20230505', 'XLSX', 'ACTIVE', NOW(), NOW(), null, 'document');
 
 -- PhotoFile 데이터 (dtype으로 구분)
 INSERT INTO file (file_id, file_name, file_key, extension, status, created, updated, photo_id, dtype)

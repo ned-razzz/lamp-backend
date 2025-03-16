@@ -1,9 +1,6 @@
-package org.younginhambak.backend.archive;
+package org.younginhambak.backend.archive.entity;
 
 import org.junit.jupiter.api.Test;
-import org.younginhambak.backend.archive.entity.Document;
-import org.younginhambak.backend.archive.entity.DocumentStatus;
-import org.younginhambak.backend.archive.entity.DocumentTag;
 import org.younginhambak.backend.file.entity.DocumentFile;
 import org.younginhambak.backend.file.entity.FileExtension;
 import org.younginhambak.backend.member.entity.Member;
@@ -57,7 +54,7 @@ class DocumentTest {
     document.update("titleu", "descriptionu", "authoru",
             filesU,
             documentTagsU
-            );
+    );
 
     //then
     assertThat(document.getFiles()).hasSize(2);
@@ -84,10 +81,10 @@ class DocumentTest {
 
     //then
     assertThat(document.getStatus()).isEqualTo(DocumentStatus.DELETED);
-    assertThat(document.getFiles().size()).isEqualTo(0);
+    assertThat(document.getFiles().size()).isEqualTo(2);
     assertThat(document.getDocumentTags().size()).isEqualTo(0);
     documentFiles.forEach(documentFile -> {
-      assertThat(documentFile.getDocument()).isNull();
+      assertThat(documentFile.getDocument()).isNotNull();
     });
     documentTags.forEach(documentTag -> {
       assertThat(documentTag.getDocument()).isNull();

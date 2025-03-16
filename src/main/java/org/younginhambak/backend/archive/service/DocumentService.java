@@ -16,7 +16,7 @@ public interface DocumentService {
   List<DocumentDetailResponse> readDocuments();
   List<DocumentDetailResponse> readDocuments(DocumentSearchRequest searchRequest);
   List<DocumentInfoResponse> readDocumentsInfo();
-  void createDocument(DocumentCreateRequest createDto);
+  Long createDocument(DocumentCreateRequest createDto);
   void updateDocument(Long documentId, DocumentUpdateRequest updateDto);
   void deleteDocument(Long documentId);
 }
