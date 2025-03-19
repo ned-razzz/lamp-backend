@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.younginhambak.backend.file.entity.DataFile;
 import org.younginhambak.backend.file.entity.PhotoFile;
 import org.younginhambak.backend.file.service.PhotoFileService;
+import org.younginhambak.backend.gallery.dto.PhotoCreateBatchRequest;
 import org.younginhambak.backend.gallery.dto.PhotoCreateRequest;
 import org.younginhambak.backend.gallery.dto.PhotoDetailResponse;
 import org.younginhambak.backend.gallery.dto.PhotoUpdateRequest;
@@ -110,6 +112,40 @@ public class PhotoServiceImpl implements PhotoService {
     );
     photoRepository.save(photo);
     return photo.getId();
+  }
+
+  @Override
+  @Transactional
+  public List<Long> createPhotos(PhotoCreateBatchRequest createBatchRequest) {
+    Member member = memberService.getMember(createBatchRequest.getCreatorMemberId()).orElseThrow();
+
+    Map<Long, PhotoFile> fileMap = photoFileService.getFiles(createBatchRequest.getFileIds())
+            .stream().collect(Collectors.toMap(DataFile::getId, file -> file));
+
+    List<PhotoTag> photoTags = getOrCreatePhotoTags(createBatchRequest.getCommonTagNames());
+
+    List<Photo> photos = createBatchRequest.getPhotos().stream()
+            .map(photo -> Photo.create(
+                            photo.getTitle(),
+                            photo.getDescription(),
+                            photo.getPhotographer(),
+                            photo.getTakenAt(),
+                            member,
+                            fileMap.get(photo.getFileId()),
+                            copyPhotoTags(photoTags)
+                    )
+            )
+            .toList();
+
+    photoRepository.saveAll(photos);
+
+    return photos.stream().map(Photo::getId).toList();
+  }
+
+  private List<PhotoTag> copyPhotoTags(List<PhotoTag> photoTags) {
+    return photoTags.stream()
+            .map(photoTag -> PhotoTag.create(photoTag.getTag()))
+            .toList();
   }
 
   @Override

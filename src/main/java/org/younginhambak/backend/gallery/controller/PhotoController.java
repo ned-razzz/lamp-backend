@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.younginhambak.backend.gallery.dto.PhotoCreateBatchRequest;
 import org.younginhambak.backend.gallery.dto.PhotoCreateRequest;
 import org.younginhambak.backend.gallery.dto.PhotoDetailResponse;
 import org.younginhambak.backend.gallery.dto.PhotoUpdateRequest;
@@ -36,6 +37,13 @@ public class PhotoController {
   public Long createPhoto(@RequestBody PhotoCreateRequest createRequest) {
     log.info("POST /api/v1/photos : {}", createRequest);
     return photoService.createPhoto(createRequest);
+  }
+
+  @ResponseStatus(HttpStatus.CREATED)
+  @PostMapping("/batch")
+  public List<Long> createPhotos(@RequestBody PhotoCreateBatchRequest createBatchRequest) {
+    log.info("POST /api/v1/photos/batch : {}", createBatchRequest);
+    return photoService.createPhotos(createBatchRequest);
   }
 
   @ResponseStatus(HttpStatus.NO_CONTENT)

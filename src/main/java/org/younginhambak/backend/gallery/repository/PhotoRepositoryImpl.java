@@ -20,6 +20,11 @@ public class PhotoRepositoryImpl implements PhotoRepository {
   }
 
   @Override
+  public void saveAll(List<Photo> photos) {
+    photos.forEach(em::persist);
+  }
+
+  @Override
   public Optional<Photo> findById(Long id) {
     Photo photo = em.find(Photo.class, id);
     return Optional.ofNullable(photo);

@@ -9,6 +9,8 @@ public interface PhotoRepository {
 
   void save(Photo photo);
 
+  void saveAll(List<Photo> photos);
+
   Optional<Photo> findById(Long id);
 
   List<Photo> findByTitle(String title);
