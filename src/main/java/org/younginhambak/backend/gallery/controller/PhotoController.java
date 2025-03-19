@@ -41,7 +41,7 @@ public class PhotoController {
 
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping("/batch")
-  public List<Long> createPhotos(@RequestBody PhotoCreateBatchRequest createBatchRequest) {
+  public List<Long> createPhotoBatch(@RequestBody PhotoCreateBatchRequest createBatchRequest) {
     log.info("POST /api/v1/photos/batch : {}", createBatchRequest);
     return photoService.createPhotos(createBatchRequest);
   }
@@ -60,5 +60,12 @@ public class PhotoController {
   public void deletePhoto(@PathVariable Long photoId) {
     log.info("DELETE /api/v1/photos/{}", photoId);
     photoService.deletePhoto(photoId);
+  }
+
+
+  @DeleteMapping("/batch")
+  public void deletePhotoBatch(@RequestBody List<Long> photoIds) {
+    log.info("DELETE /api/v1/photos/batch : {}", photoIds);
+    photoService.deletePhotos(photoIds);
   }
 }

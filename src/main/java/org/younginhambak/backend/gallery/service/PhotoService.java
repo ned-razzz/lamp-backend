@@ -13,6 +13,7 @@ import java.util.Optional;
 
 public interface PhotoService {
   Optional<Photo> getPhoto(Long photoId);
+  List<Photo> getPhotos(List<Long> photoIds);
   List<Photo> getPhotoAll();
   List<PhotoTag> getPhotoTags(List<PhotoTagId> photoTagIds);
   PhotoDetailResponse readPhoto(Long photoId);
@@ -21,4 +22,5 @@ public interface PhotoService {
   List<Long> createPhotos(PhotoCreateBatchRequest createBatchRequest);
   void updatePhoto(Long photoId, PhotoUpdateRequest updateDto);
   void deletePhoto(Long photoId);
+  void deletePhotos(List<Long> photoIds);
 }

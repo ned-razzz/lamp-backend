@@ -48,6 +48,13 @@ public class PhotoServiceImpl implements PhotoService {
   }
 
   @Override
+  public List<Photo> getPhotos(List<Long> photoIds) {
+    List<Photo> photos = photoRepository.findByIdIn(photoIds);
+    Assert.isTrue(photos.size() == photoIds.size(), "조회하려는 photo ids 중에 존재하지 않는 record의 id가 있습니다.");
+    return photos;
+  }
+
+  @Override
   public List<Photo> getPhotoAll() {
     return photoRepository.findAll();
   }
@@ -175,6 +182,13 @@ public class PhotoServiceImpl implements PhotoService {
   public void deletePhoto(Long photoId) {
     Photo photo = getPhoto(photoId).orElseThrow();
     photo.delete();
+  }
+
+  @Override
+  @Transactional
+  public void deletePhotos(List<Long> photoIds) {
+    List<Photo> photos = getPhotos(photoIds);
+    photos.forEach(Photo::delete);
   }
 
   private List<PhotoTag> getOrCreatePhotoTags(List<String> tagNames) {

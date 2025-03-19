@@ -13,6 +13,8 @@ public interface PhotoRepository {
 
   Optional<Photo> findById(Long id);
 
+  List<Photo> findByIdIn(List<Long> ids);
+
   List<Photo> findByTitle(String title);
 
   List<Photo> findAll();

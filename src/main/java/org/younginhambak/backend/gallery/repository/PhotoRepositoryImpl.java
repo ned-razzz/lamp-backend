@@ -31,6 +31,14 @@ public class PhotoRepositoryImpl implements PhotoRepository {
   }
 
   @Override
+  public List<Photo> findByIdIn(List<Long> ids) {
+    String jsql = "select p from Photo p where p.id in :ids";
+    return em.createQuery(jsql, Photo.class)
+            .setParameter("ids", ids)
+            .getResultList();
+  }
+
+  @Override
   public List<Photo> findByTitle(String title) {
     String jsql = "select p from Photo p where p.title like :title";
     return em.createQuery(jsql, Photo.class)
