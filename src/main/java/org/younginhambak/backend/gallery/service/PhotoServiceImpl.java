@@ -72,6 +72,7 @@ public class PhotoServiceImpl implements PhotoService {
             .title(photo.getTitle())
             .description(photo.getDescription())
             .photographer(photo.getPhotographer())
+            .takenAt(photo.getTakenAt())
             .tagNames(photo.getTagNames())
             .fileUrl(downloadUrl)
             .created(photo.getCreated())
