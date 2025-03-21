@@ -8,10 +8,7 @@ import org.springframework.util.Assert;
 import org.younginhambak.backend.file.entity.DataFile;
 import org.younginhambak.backend.file.entity.PhotoFile;
 import org.younginhambak.backend.file.service.PhotoFileService;
-import org.younginhambak.backend.gallery.dto.PhotoCreateBatchRequest;
-import org.younginhambak.backend.gallery.dto.PhotoCreateRequest;
-import org.younginhambak.backend.gallery.dto.PhotoDetailResponse;
-import org.younginhambak.backend.gallery.dto.PhotoUpdateRequest;
+import org.younginhambak.backend.gallery.dto.*;
 import org.younginhambak.backend.gallery.entity.Photo;
 import org.younginhambak.backend.gallery.entity.PhotoTag;
 import org.younginhambak.backend.gallery.entity.PhotoTagId;
@@ -99,6 +96,32 @@ public class PhotoServiceImpl implements PhotoService {
               .updated(photo.getUpdated())
               .build();
     }).toList();
+  }
+
+  @Override
+  public List<PhotoDetailResponse> readPhotos(PhotoSearchRequest searchRequest) {
+    List<Photo> photos = photoRepository.searchByCondition(
+            searchRequest.getTitle(),
+            searchRequest.getTags(),
+            searchRequest.getSort()
+    );
+
+    return photos.stream()
+            .map(photo -> {
+              URL downloadUrl = photoFileService.generateDownloadUrl(photo.getFile().getFileKey(), photo.getFile().getFileName());
+              return PhotoDetailResponse.builder()
+                      .id(photo.getId())
+                      .title(photo.getTitle())
+                      .description(photo.getDescription())
+                      .photographer(photo.getPhotographer())
+                      .takenAt(photo.getTakenAt())
+                      .tagNames(photo.getTagNames())
+                      .fileUrl(downloadUrl)
+                      .created(photo.getCreated())
+                      .updated(photo.getUpdated())
+                      .build();
+            })
+            .toList();
   }
 
   @Override

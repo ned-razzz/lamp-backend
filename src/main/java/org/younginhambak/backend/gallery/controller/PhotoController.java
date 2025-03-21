@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.younginhambak.backend.gallery.dto.PhotoCreateBatchRequest;
-import org.younginhambak.backend.gallery.dto.PhotoCreateRequest;
-import org.younginhambak.backend.gallery.dto.PhotoDetailResponse;
-import org.younginhambak.backend.gallery.dto.PhotoUpdateRequest;
+import org.younginhambak.backend.gallery.dto.*;
 import org.younginhambak.backend.gallery.service.PhotoService;
 
 import java.util.List;
@@ -27,9 +24,11 @@ public class PhotoController {
   }
 
   @GetMapping
-  public List<PhotoDetailResponse> readPhotos() {
-    log.info("GET /api/v1/photos");
-    return photoService.readPhotos();
+  public List<PhotoDetailResponse> searchPhotos(@ModelAttribute PhotoSearchRequest searchRequest) {
+    log.info("GET /api/v1/photos?");
+    log.info("title = {}", searchRequest.getTitle());
+    log.info("tags = {}", searchRequest.getTags());
+    return photoService.readPhotos(searchRequest);
   }
 
   @ResponseStatus(HttpStatus.CREATED)

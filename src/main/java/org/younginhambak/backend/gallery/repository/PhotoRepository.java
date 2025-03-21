@@ -18,5 +18,7 @@ public interface PhotoRepository {
   List<Photo> findByTitle(String title);
 
   List<Photo> findAll();
+
+  List<Photo> searchByCondition(String title, List<Long> tagIds, String sort);
 }
 
