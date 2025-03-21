@@ -5,11 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.younginhambak.backend.file.entity.DataFile;
 import org.younginhambak.backend.file.entity.PhotoFile;
 import org.younginhambak.backend.file.service.PhotoFileService;
-import org.younginhambak.backend.gallery.dto.PhotoCreateRequest;
-import org.younginhambak.backend.gallery.dto.PhotoDetailResponse;
-import org.younginhambak.backend.gallery.dto.PhotoUpdateRequest;
+import org.younginhambak.backend.gallery.dto.*;
 import org.younginhambak.backend.gallery.entity.Photo;
 import org.younginhambak.backend.gallery.entity.PhotoTag;
 import org.younginhambak.backend.gallery.entity.PhotoTagId;
@@ -46,6 +45,13 @@ public class PhotoServiceImpl implements PhotoService {
   }
 
   @Override
+  public List<Photo> getPhotos(List<Long> photoIds) {
+    List<Photo> photos = photoRepository.findByIdIn(photoIds);
+    Assert.isTrue(photos.size() == photoIds.size(), "조회하려는 photo ids 중에 존재하지 않는 record의 id가 있습니다.");
+    return photos;
+  }
+
+  @Override
   public List<Photo> getPhotoAll() {
     return photoRepository.findAll();
   }
@@ -66,6 +72,7 @@ public class PhotoServiceImpl implements PhotoService {
             .title(photo.getTitle())
             .description(photo.getDescription())
             .photographer(photo.getPhotographer())
+            .takenAt(photo.getTakenAt())
             .tagNames(photo.getTagNames())
             .fileUrl(downloadUrl)
             .created(photo.getCreated())
@@ -93,6 +100,32 @@ public class PhotoServiceImpl implements PhotoService {
   }
 
   @Override
+  public List<PhotoDetailResponse> readPhotos(PhotoSearchRequest searchRequest) {
+    List<Photo> photos = photoRepository.searchByCondition(
+            searchRequest.getTitle(),
+            searchRequest.getTags(),
+            searchRequest.getSort()
+    );
+
+    return photos.stream()
+            .map(photo -> {
+              URL downloadUrl = photoFileService.generateDownloadUrl(photo.getFile().getFileKey(), photo.getFile().getFileName());
+              return PhotoDetailResponse.builder()
+                      .id(photo.getId())
+                      .title(photo.getTitle())
+                      .description(photo.getDescription())
+                      .photographer(photo.getPhotographer())
+                      .takenAt(photo.getTakenAt())
+                      .tagNames(photo.getTagNames())
+                      .fileUrl(downloadUrl)
+                      .created(photo.getCreated())
+                      .updated(photo.getUpdated())
+                      .build();
+            })
+            .toList();
+  }
+
+  @Override
   @Transactional
   public Long createPhoto(PhotoCreateRequest createRequest) {
     Member member = memberService.getMember(createRequest.getCreatorMemberId()).orElseThrow();
@@ -110,6 +143,40 @@ public class PhotoServiceImpl implements PhotoService {
     );
     photoRepository.save(photo);
     return photo.getId();
+  }
+
+  @Override
+  @Transactional
+  public List<Long> createPhotos(PhotoCreateBatchRequest createBatchRequest) {
+    Member member = memberService.getMember(createBatchRequest.getCreatorMemberId()).orElseThrow();
+
+    Map<Long, PhotoFile> fileMap = photoFileService.getFiles(createBatchRequest.getFileIds())
+            .stream().collect(Collectors.toMap(DataFile::getId, file -> file));
+
+    List<PhotoTag> photoTags = getOrCreatePhotoTags(createBatchRequest.getCommonTagNames());
+
+    List<Photo> photos = createBatchRequest.getPhotos().stream()
+            .map(photo -> Photo.create(
+                            photo.getTitle(),
+                            photo.getDescription(),
+                            photo.getPhotographer(),
+                            photo.getTakenAt(),
+                            member,
+                            fileMap.get(photo.getFileId()),
+                            copyPhotoTags(photoTags)
+                    )
+            )
+            .toList();
+
+    photoRepository.saveAll(photos);
+
+    return photos.stream().map(Photo::getId).toList();
+  }
+
+  private List<PhotoTag> copyPhotoTags(List<PhotoTag> photoTags) {
+    return photoTags.stream()
+            .map(photoTag -> PhotoTag.create(photoTag.getTag()))
+            .toList();
   }
 
   @Override
@@ -139,6 +206,13 @@ public class PhotoServiceImpl implements PhotoService {
   public void deletePhoto(Long photoId) {
     Photo photo = getPhoto(photoId).orElseThrow();
     photo.delete();
+  }
+
+  @Override
+  @Transactional
+  public void deletePhotos(List<Long> photoIds) {
+    List<Photo> photos = getPhotos(photoIds);
+    photos.forEach(Photo::delete);
   }
 
   private List<PhotoTag> getOrCreatePhotoTags(List<String> tagNames) {

@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.younginhambak.backend.gallery.dto.PhotoCreateRequest;
-import org.younginhambak.backend.gallery.dto.PhotoDetailResponse;
-import org.younginhambak.backend.gallery.dto.PhotoUpdateRequest;
+import org.younginhambak.backend.gallery.dto.*;
 import org.younginhambak.backend.gallery.service.PhotoService;
 
 import java.util.List;
@@ -26,9 +24,11 @@ public class PhotoController {
   }
 
   @GetMapping
-  public List<PhotoDetailResponse> readPhotos() {
-    log.info("GET /api/v1/photos");
-    return photoService.readPhotos();
+  public List<PhotoDetailResponse> searchPhotos(@ModelAttribute PhotoSearchRequest searchRequest) {
+    log.info("GET /api/v1/photos?");
+    log.info("title = {}", searchRequest.getTitle());
+    log.info("tags = {}", searchRequest.getTags());
+    return photoService.readPhotos(searchRequest);
   }
 
   @ResponseStatus(HttpStatus.CREATED)
@@ -36,6 +36,13 @@ public class PhotoController {
   public Long createPhoto(@RequestBody PhotoCreateRequest createRequest) {
     log.info("POST /api/v1/photos : {}", createRequest);
     return photoService.createPhoto(createRequest);
+  }
+
+  @ResponseStatus(HttpStatus.CREATED)
+  @PostMapping("/batch")
+  public List<Long> createPhotoBatch(@RequestBody PhotoCreateBatchRequest createBatchRequest) {
+    log.info("POST /api/v1/photos/batch : {}", createBatchRequest);
+    return photoService.createPhotos(createBatchRequest);
   }
 
   @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -52,5 +59,12 @@ public class PhotoController {
   public void deletePhoto(@PathVariable Long photoId) {
     log.info("DELETE /api/v1/photos/{}", photoId);
     photoService.deletePhoto(photoId);
+  }
+
+
+  @DeleteMapping("/batch")
+  public void deletePhotoBatch(@RequestBody List<Long> photoIds) {
+    log.info("DELETE /api/v1/photos/batch : {}", photoIds);
+    photoService.deletePhotos(photoIds);
   }
 }
